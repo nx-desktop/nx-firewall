@@ -10,9 +10,8 @@ class NomadFirewallKCM : public KQuickAddons::ConfigModule
 public:
     explicit NomadFirewallKCM(QObject *parent, const QVariantList &args);
 
-
-
     ~NomadFirewallKCM();
+
 };
 
 #endif // NOMADFIREWALLKCM_H

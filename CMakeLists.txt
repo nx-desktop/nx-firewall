@@ -33,13 +33,16 @@ add_subdirectory(lib)
 
 #############################################################################
 
-kpackage_install_package(package org.nomad.kcms.firewall kcms)
-
+file(GLOB_RECURSE QML_SRCS package/*)
+add_custom_target(PackageFiles ALL echo SOURCES ${QML_SRCS} ${JS_SRCS})
+kpackage_install_package(package kcm_nomadFirewall kcms)
 
 #############################################################################
 
-file(GLOB_RECURSE QML_SRCS package/*)
-add_custom_target(PackageFiles ALL echo SOURCES ${QML_SRCS} ${JS_SRCS})
 
+install( FILES kcm_nomadFirewall.desktop  DESTINATION ${SERVICES_INSTALL_DIR} )
+
+
+#############################################################################
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

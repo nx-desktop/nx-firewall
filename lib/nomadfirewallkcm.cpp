@@ -9,8 +9,10 @@
 #include "version.h"
 
 K_PLUGIN_FACTORY_WITH_JSON(NomadFirewallKCMFactory,
-                           "metadata.json",
+                           "kcm_nomadFirewall.json",
                            registerPlugin<NomadFirewallKCM>(); )
+
+K_EXPORT_PLUGIN(NomadFirewallKCMFactory("kcm_nomadFirewall" /* kcm name */, "kcm_nomadFirewall" /* catalog name */))
 
 NomadFirewallKCM::NomadFirewallKCM(QObject *parent, const QVariantList &args) :
     KQuickAddons::ConfigModule(parent, args)

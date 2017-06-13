@@ -6,16 +6,23 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 
+import org.kde.kcm 1.0
+
 Item {
-    height: 600
-    width: 800
+    //implicitWidth and implicitHeight will be used as initial size
+    //when loaded in kcmshell5
+    implicitWidth: units.gridUnit * 20
+    implicitHeight: units.gridUnit * 20
+
+    ConfigModule.buttons: ConfigModule.Help | ConfigModule.Apply
+
+//    height: 600
+//    width: 800
 
     property bool isFirewallOn: false
     property string firewallStatusString: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
 
     GridLayout {
-        anchors.margins: 32
-        anchors.leftMargin: 38
 
         columns: 3
         anchors.fill: parent
@@ -73,7 +80,7 @@ Item {
                     }
                     PlasmaExtras.Heading {
                         level: 4
-                        text:  i18n("Blocks all incoming connections except those required for basic internet services, such as DHCP.")
+                        text: i18n("Blocks all incoming connections except those required for basic internet services, such as DHCP.")
 
                         Layout.columnSpan: 3
                         Layout.fillWidth: true
@@ -89,7 +96,7 @@ Item {
                     }
                     PlasmaExtras.Heading {
                         level: 4
-                        text:  i18n("Don't respond to or acknowlegde attempts to access this computerfrom the network by test applications using ICMP, such as Ping.")
+                        text: i18n("Don't respond to or acknowlegde attempts to access this computerfrom the network by test applications using ICMP, such as Ping.")
 
                         Layout.columnSpan: 3
                         Layout.fillWidth: true
@@ -105,7 +112,7 @@ Item {
                     }
                     PlasmaExtras.Heading {
                         level: 4
-                        text:  i18n("Blocks all connections to/from your computer and set the logging level to full.")
+                        text: i18n("Blocks all connections to/from your computer and set the logging level to full.")
 
                         Layout.columnSpan: 3
                         Layout.fillWidth: true
@@ -126,7 +133,6 @@ Item {
                 ViewAppNetworkAccess {
                     anchors.fill: parent
                     anchors.margins: 12
-
                 }
             }
 
@@ -136,7 +142,5 @@ Item {
                 }
             }
         }
-
-
     }
 }
