@@ -1,0 +1,2 @@
+module org.nomad.ufw
+plugin nomad_ufw_plugin

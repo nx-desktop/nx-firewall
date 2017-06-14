@@ -1,8 +1,8 @@
-project(kcm-nomad-firewall)
+project(nomad-firewall)
 cmake_minimum_required(VERSION 2.18.12)
 
 set(KF5_MIN_VERSION "5.30.0")
-set(QT_MIN_VERSION "5.5.0")
+set(QT_MIN_VERSION "5.6.0")
 
 find_package(ECM 0.0.14 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
@@ -12,10 +12,6 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
 
-find_package(Qt5 ${QT_MIN_VERSION} REQUIRED NO_MODULE COMPONENTS Core Quick Test Gui )
-
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
-    Archive NewStuff NewStuffCore KIO Declarative I18n Config ConfigWidgets)
 
 ################# Enable C++11 features for clang and gcc #################
 
@@ -24,24 +20,10 @@ if(UNIX)
 endif()
 
 
-################# KI18N Translation Domain for this library #################
-add_definitions(-DTRANSLATION_DOMAIN=\"kcm-nomad-firewall\")
-
 #############################################################################
 
-add_subdirectory(lib)
-
-#############################################################################
-
-file(GLOB_RECURSE QML_SRCS package/*)
-add_custom_target(PackageFiles ALL echo SOURCES ${QML_SRCS} ${JS_SRCS})
-kpackage_install_package(package kcm_nomadFirewall kcms)
-
-#############################################################################
-
-
-install( FILES kcm_nomadFirewall.desktop  DESTINATION ${SERVICES_INSTALL_DIR} )
-
+add_subdirectory(plugins)
+add_subdirectory(app)
 
 #############################################################################
 
