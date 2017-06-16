@@ -342,7 +342,7 @@ ActionReply Helper::run(const QStringList &args, const QString &cmd)
     ActionReply reply;
 
     qDebug() << __FUNCTION__ << args;
-    ufw.start("/usr/bin/nomad_ufw_plugin_helper.py", args, QIODevice::ReadOnly);
+    ufw.start("/usr/lib/libexec/nomad_ufw_plugin_helper.py", args, QIODevice::ReadOnly);
     if (ufw.waitForStarted())
         ufw.waitForFinished();
 
