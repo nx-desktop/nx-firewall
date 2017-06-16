@@ -12,4 +12,6 @@ ApplicationWindow {
     title: i18n("Nomad Firewall")
 
     id: mainWindow
+    UfwClient {
+    }
 }
