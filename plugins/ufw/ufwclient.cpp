@@ -5,18 +5,47 @@
 
 #include <KLocalizedString>
 
+
 UfwClient::UfwClient(QObject *parent) :
     QObject(parent),
     m_isBusy(false)
 {
     setupActions();
+    queryStatus();
 }
 
-bool UfwClient::isActive() const
+bool UfwClient::enabled() const
 {
-
-    return true;
+    return m_currentProfile.getEnabled();
 }
+
+void UfwClient::setEnabled(const bool &enabled)
+{
+    QVariantMap args;
+    args["cmd"]="setStatus";
+    args["status"] = enabled;
+    m_modifyAction.setArguments(args);
+    m_status = enabled ? i18n("Enabling the firewall...") : i18n("Disabling the firewall...");
+    m_isBusy = true;
+
+
+    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
+    {
+        auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
+
+        setStatus("");
+        setBusy(false);
+
+        if (!job->error())
+            queryStatus(true, false);
+
+
+    });
+
+    job->start();
+}
+
 
 bool UfwClient::isBusy() const
 {
@@ -38,12 +67,24 @@ void UfwClient::queryStatus(bool readDefaults, bool listProfiles)
     setStatus(i18n("Querying firewall status..."));
 
     KAuth::ExecuteJob *job = m_queryAction.execute();
-    connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)  {
+    connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
+    {
         auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
-        qDebug() << job->error() << job->errorString() << job->data() ;
 
+        if (!job->error())
+        {
+            QByteArray response = job->data().value("response", "").toByteArray();
+
+            auto oldProfile = m_currentProfile;
+            m_currentProfile = UFW::Profile(response);
+            if (m_currentProfile.getEnabled() != oldProfile.getEnabled())
+                emit enabledChanged(m_currentProfile.getEnabled());
+
+        }
+        setStatus("");
         setBusy(false);
     });
+
     job->start();
 }
 

@@ -6,23 +6,26 @@
 
 #include <KAuth>
 
-// #include "blocker.h"
+#include "profile.h"
 
 class UfwClient : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool isActive READ isActive)
+    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(bool isBusy READ isBusy NOTIFY isBusyChanged)
     Q_PROPERTY(QString status READ status NOTIFY statusChanged)
 public:
     explicit UfwClient(QObject *parent = nullptr);
 
-    bool isActive() const;
+    bool enabled() const;
+    void setEnabled(const bool &enabled);
+
     bool isBusy() const;
     void setupActions();
     QString status() const;
 signals:
     void isBusyChanged(const bool isBusy);
+    void enabledChanged(const bool enabled);
     void statusChanged(const QString &status);
 
 public slots:
@@ -37,6 +40,7 @@ private:
     KAuth::Action       m_queryAction,
                         m_modifyAction;
     bool                m_isBusy;
+    UFW::Profile        m_currentProfile;
 //    UFW::Blocker       *blocker;
 };
 
