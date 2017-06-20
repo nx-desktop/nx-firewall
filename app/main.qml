@@ -17,19 +17,16 @@ ApplicationWindow {
         id: ufwClient
     }
 
-    CheckBox {
-        checked: ufwClient.enabled
-        onCheckedChanged: {
-            ufwClient.enabled = this.checked
+
+    Rectangle {
+        anchors.centerIn: parent
+        color: "white"
+
+        height: 500
+        width: 800
+        RulesView {
+            anchors.fill: parent
         }
     }
-    PlasmaComponents.BusyIndicator {
-        anchors.centerIn: parent
-        running: ufwClient.isBusy;
-    }
-    PlasmaComponents.Label {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        text: ufwClient.status
-    }
+
 }
