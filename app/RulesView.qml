@@ -5,43 +5,51 @@ import QtQuick.Controls 1.4
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
-Item {
+FocusScope {
     property alias model: listView.model
 
-    FocusScope {
+    ScrollView {
         anchors.fill: parent
-        ScrollView {
-            anchors.fill: parent
 
-            ListView {
-                id: listView
-                delegate: RuleListItem {
-                    onMove: function (from, to) {
-                        // Force valid positions
-                        to = Math.max(0, to)
-                        to = Math.min(listView.model.rowCount() - 1, to)
+        ListView {
+            id: listView
+            delegate: RuleListItem {
+                onMove: function (from, to) {
+                    // Force valid positions
+                    to = Math.max(0, to)
+                    to = Math.min(listView.model.rowCount() - 1, to)
 
-                        // Hack to force the list to be redraw and the item return to
-                        // its original position
-                        if (from == to)
-                            listView.model.modelReset()
-                        else
-                            listView.model.move(from, to)
-                    }
+                    // Hack to force the list to be redraw and the item return to
+                    // its original position
+                    if (from == to)
+                        listView.model.modelReset()
+                    else
+                        listView.model.move(from, to)
+                }
 
+                onEdit: function (index) {
+                    ruleDeatils.open()
                 }
             }
         }
+    }
 
-        PlasmaComponents.ToolButton {
-            height: 48
-            iconSource: "list-add"
-            text: i18n("New Rule")
+    PlasmaComponents.ToolButton {
+        height: 48
+        iconSource: "list-add"
+        text: i18n("New Rule")
 
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 12
-            anchors.right: parent.right
-            anchors.rightMargin: 12
-        }
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 12
+        anchors.right: parent.right
+        anchors.rightMargin: 12
+    }
+
+    RuleEdit {
+        id: ruleDeatils
+        x: 0
+        y: 0
+        height: parent.height
+        width: parent.width
     }
 }

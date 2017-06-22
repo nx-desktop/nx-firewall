@@ -2,7 +2,7 @@ project(nomad-firewall)
 cmake_minimum_required(VERSION 2.18.12)
 
 set(KF5_MIN_VERSION "5.30.0")
-set(QT_MIN_VERSION "5.6.0")
+set(QT_MIN_VERSION "5.7.0")
 
 find_package(ECM 0.0.14 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})

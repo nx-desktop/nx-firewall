@@ -118,4 +118,6 @@ MouseArea {
             }
         }
     ]
+
+    onClicked: edit(index)
 }
