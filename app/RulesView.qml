@@ -52,8 +52,13 @@ Item {
                         // Force valid positions
                         to = Math.max(0, to)
                         to = Math.min(exampleRules.count - 1, to)
-                        exampleRules.move(from, to, 1)
-                        exampleRules.modelReset()
+
+                        // Hack to force the list to be redraw and the item return to
+                        // its original position
+                        if (from === to)
+                            exampleRules.modelReset()
+                        else
+                            exampleRules.move(from, to, 1)
                     }
 
                 }
