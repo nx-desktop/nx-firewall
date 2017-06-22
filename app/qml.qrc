@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>RulesView.qml</file>
         <file>RuleListItem.qml</file>
+        <file>RuleEdit.qml</file>
     </qresource>
 </RCC>
