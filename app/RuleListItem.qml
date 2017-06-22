@@ -17,11 +17,12 @@ MouseArea {
     signal edit(int index)
     signal remove(int index)
 
-    z: dragArea.pressed ? 100: 0
+    z: dragArea.pressed ? 100 : 0
 
     Rectangle {
+        id: background
         anchors.fill: parent
-        visible: dragArea.pressed
+        opacity: 0
         color: "lightblue"
         border.color: "black"
         border.width: 1
@@ -90,4 +91,31 @@ MouseArea {
         iconSource: "entry-delete"
         onClicked: itemRoot.remove(index)
     }
+
+    states: [
+        State {
+            name: "grabed"
+            when: dragArea.pressed
+            PropertyChanges {
+                target: background
+                opacity: 1
+            }
+        }
+    ]
+    transitions: [
+        Transition {
+            to: "grabed"
+            NumberAnimation {
+                properties: "opacity"
+                easing.type: Easing.InOutQuad
+            }
+        },
+        Transition {
+            from: "grabed"
+            NumberAnimation {
+                properties: "opacity"
+                easing.type: Easing.InOutQuad
+            }
+        }
+    ]
 }
