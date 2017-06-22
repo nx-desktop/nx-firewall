@@ -26,6 +26,7 @@ ApplicationWindow {
         width: 800
         RulesView {
             anchors.fill: parent
+            model: ufwClient.rules()
         }
     }
 

@@ -6,38 +6,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
 Item {
-
-    ListModel {
-        id: exampleRules
-        ListElement {
-            action: "1 Deny incoming"
-            from: "Anywhere"
-            to: "CUPS(631)"
-            ipv6: false
-            logging: "None"
-        }
-        ListElement {
-            action: "2 Deny incoming"
-            from: "Anywhere"
-            to: "CUPS(631)"
-            ipv6: false
-            logging: "None"
-        }
-        ListElement {
-            action: "3 Deny incoming"
-            from: "Anywhere"
-            to: "CUPS(631)"
-            ipv6: false
-            logging: "None"
-        }
-        ListElement {
-            action: "4 Deny incoming"
-            from: "Anywhere"
-            to: "CUPS(631)"
-            ipv6: false
-            logging: "None"
-        }
-    }
+    property alias model: listView.model
 
     FocusScope {
         anchors.fill: parent
@@ -46,19 +15,18 @@ Item {
 
             ListView {
                 id: listView
-                model: exampleRules
                 delegate: RuleListItem {
                     onMove: function (from, to) {
                         // Force valid positions
                         to = Math.max(0, to)
-                        to = Math.min(exampleRules.count - 1, to)
+                        to = Math.min(listView.model.rowCount() - 1, to)
 
                         // Hack to force the list to be redraw and the item return to
                         // its original position
-                        if (from === to)
-                            exampleRules.modelReset()
+                        if (from == to)
+                            listView.model.modelReset()
                         else
-                            exampleRules.move(from, to, 1)
+                            listView.model.move(from, to)
                     }
 
                 }
