@@ -7,6 +7,7 @@
 #include <KAuth>
 
 #include "profile.h"
+#include "rulelistmodel.h"
 
 class UfwClient : public QObject
 {
@@ -23,6 +24,7 @@ public:
     bool isBusy() const;
     void setupActions();
     QString status() const;
+    Q_INVOKABLE RuleListModel* rules() const;
 signals:
     void isBusyChanged(const bool isBusy);
     void enabledChanged(const bool enabled);
@@ -35,12 +37,14 @@ public slots:
 protected:
     void setStatus(const QString &status);
     void setBusy(const bool &busy);
+    void setProfile(UFW::Profile profile);
 private:
     QString m_status;
     KAuth::Action       m_queryAction,
                         m_modifyAction;
     bool                m_isBusy;
     UFW::Profile        m_currentProfile;
+    RuleListModel*   m_rulesModel;
 //    UFW::Blocker       *blocker;
 };
 

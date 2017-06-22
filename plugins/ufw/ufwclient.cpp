@@ -8,7 +8,8 @@
 
 UfwClient::UfwClient(QObject *parent) :
     QObject(parent),
-    m_isBusy(false)
+    m_isBusy(false),
+    m_rulesModel( new RuleListModel(this))
 {
     setupActions();
     queryStatus();
@@ -74,12 +75,7 @@ void UfwClient::queryStatus(bool readDefaults, bool listProfiles)
         if (!job->error())
         {
             QByteArray response = job->data().value("response", "").toByteArray();
-
-            auto oldProfile = m_currentProfile;
-            m_currentProfile = UFW::Profile(response);
-            if (m_currentProfile.getEnabled() != oldProfile.getEnabled())
-                emit enabledChanged(m_currentProfile.getEnabled());
-
+            setProfile(UFW::Profile(response));
         }
         setStatus("");
         setBusy(false);
@@ -103,6 +99,16 @@ void UfwClient::setBusy(const bool &isBusy)
     }
 }
 
+void UfwClient::setProfile(UFW::Profile profile)
+{
+    auto oldProfile = m_currentProfile;
+    m_currentProfile = profile;
+
+    m_rulesModel->setProfile(m_currentProfile);
+    if (m_currentProfile.getEnabled() != oldProfile.getEnabled())
+        emit enabledChanged(m_currentProfile.getEnabled());
+}
+
 
 void UfwClient::setupActions()
 {
@@ -115,4 +121,9 @@ void UfwClient::setupActions()
 QString UfwClient::status() const
 {
     return m_status;
+}
+
+RuleListModel *UfwClient::rules() const
+{
+    return m_rulesModel;
 }
