@@ -25,7 +25,8 @@
  */
 
 #include "types.h"
-#include <QtCore/QString>
+#include <QString>
+#include <QObject>
 
 class QDomElement;
 
@@ -65,6 +66,7 @@ class Rule
     QString       loggingStr() const;
     QString       toXml() const;
 
+    int             getPosition() const          { return position; }
     Types::Policy   getAction() const            { return action; }
     bool            getIncoming() const          { return incoming; }
     bool            getV6() const                { return v6; }

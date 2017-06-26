@@ -109,6 +109,7 @@ enum Protocol
 extern QString        toString(LogLevel level, bool ui=false);
 extern LogLevel       toLogLevel(const QString &str);
 extern QString        toString(Logging log, bool ui=false);
+extern Logging        toLogging(const QString &str);
 extern QString        toString(Policy policy, bool ui=false);
 extern Policy         toPolicy(const QString &str);
 extern QString        toString(PredefinedPort pp, bool ui=false);
