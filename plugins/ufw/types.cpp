@@ -152,6 +152,14 @@ Protocol toProtocol(const QString &str)
     return PROTO_BOTH;
 }
 
+Logging toLogging(const QString &str)
+{
+    for(int i=0; i<LOGGING_COUNT; ++i)
+        if(toString((Logging)i)==str)
+            return (Logging)i;
+    return LOGGING_OFF;
+}
+
 }
 
 }

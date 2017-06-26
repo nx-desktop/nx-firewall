@@ -28,6 +28,10 @@ FocusScope {
                 }
 
                 onEdit: function (index) {
+                    print(index)
+                    var rule = ufwClient.getRule(index)
+                    ruleDeatils.rule = rule;
+                    print(rule.policy, rule.position)
                     ruleDeatils.open()
                 }
             }
@@ -45,11 +49,16 @@ FocusScope {
         anchors.rightMargin: 12
     }
 
+
     RuleEdit {
         id: ruleDeatils
         x: 0
         y: 0
         height: parent.height
         width: parent.width
+
+        onAccept: function (rule) {
+            ufwClient.updateRule(rule);
+        }
     }
 }

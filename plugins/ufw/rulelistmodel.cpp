@@ -44,7 +44,6 @@ void RuleListModel::change(int index)
     dataChanged(QModelIndex(), createIndex(index, 0));
 }
 
-
 int RuleListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);

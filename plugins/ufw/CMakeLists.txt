@@ -25,6 +25,7 @@ set(nomad_ufw_plugin_SRCS
     types.cpp
     appprofiles.cpp
     rulelistmodel.cpp
+    rulewrapper.cpp
     qmldir
 )
 

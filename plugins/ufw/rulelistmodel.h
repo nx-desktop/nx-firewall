@@ -3,6 +3,7 @@
 
 #include <QAbstractListModel>
 
+#include "rulewrapper.h"
 #include "profile.h"
 
 class RuleListModel : public QAbstractListModel

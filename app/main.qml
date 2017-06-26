@@ -30,4 +30,7 @@ ApplicationWindow {
         }
     }
 
+    statusBar: PlasmaComponents.Label {
+        text: ufwClient.status
+    }
 }

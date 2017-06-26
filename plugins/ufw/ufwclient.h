@@ -25,6 +25,10 @@ public:
     void setupActions();
     QString status() const;
     Q_INVOKABLE RuleListModel* rules() const;
+
+    Q_INVOKABLE RuleWrapper* getRule(int index);
+    Q_INVOKABLE void updateRule(RuleWrapper * rule);
+
 signals:
     void isBusyChanged(const bool isBusy);
     void enabledChanged(const bool enabled);
