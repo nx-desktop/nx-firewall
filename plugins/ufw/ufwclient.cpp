@@ -87,6 +87,58 @@ void UfwClient::queryStatus(bool readDefaults, bool listProfiles)
     job->start();
 }
 
+void UfwClient::setDefaultIncomingPolicy(QString defaultIncomingPolicy)
+{
+    QVariantMap args;
+    args["cmd"]="setDefaults";
+    args["xml"]=QString("<defaults incoming=\"")+defaultIncomingPolicy+QString("\" />");
+    m_modifyAction.setArguments(args);
+    m_status = i18n("Setting firewall default incomming policy...");
+    m_isBusy = true;
+
+    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
+    {
+        auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
+
+        setStatus("");
+        setBusy(false);
+
+        if (!job->error())
+            queryStatus(true, false);
+
+
+    });
+
+    job->start();
+}
+
+void UfwClient::setDefaultOutgoingPolicy(QString defaultOutgoingPolicy)
+{
+    QVariantMap args;
+    args["cmd"]="setDefaults";
+    args["xml"]=QString("<defaults outgoing=\"")+defaultOutgoingPolicy+QString("\" />");
+    m_modifyAction.setArguments(args);
+    m_status = i18n("Setting firewall default outgoing policy...");
+    m_isBusy = true;
+
+    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
+    {
+        auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
+
+        setStatus("");
+        setBusy(false);
+
+        if (!job->error())
+            queryStatus(true, false);
+
+
+    });
+
+    job->start();
+}
+
 void UfwClient::setStatus(const QString &status)
 {
     m_status = status;
@@ -110,6 +162,16 @@ void UfwClient::setProfile(UFW::Profile profile)
     m_rulesModel->setProfile(m_currentProfile);
     if (m_currentProfile.getEnabled() != oldProfile.getEnabled())
         emit enabledChanged(m_currentProfile.getEnabled());
+
+    if (m_currentProfile.getDefaultIncomingPolicy() != oldProfile.getDefaultIncomingPolicy()) {
+        QString policy = UFW::Types::toString(m_currentProfile.getDefaultIncomingPolicy());
+        emit defaultIncomingPolicyChanged(policy);
+    }
+
+    if (m_currentProfile.getDefaultOutgoingPolicy() != oldProfile.getDefaultOutgoingPolicy()) {
+        QString policy = UFW::Types::toString(m_currentProfile.getDefaultOutgoingPolicy());
+        emit defaultOutgoingPolicyChanged(policy);
+    }
 }
 
 
@@ -267,4 +329,16 @@ QStringList UfwClient::getKnownInterfaces()
         interfaces_names << iface.name();
 
     return interfaces_names;
+}
+
+QString UfwClient::defaultIncomingPolicy() const
+{
+    auto policy_t = m_currentProfile.getDefaultIncomingPolicy();
+    return UFW::Types::toString(policy_t);
+}
+
+QString UfwClient::defaultOutgoingPolicy() const
+{
+    auto policy_t = m_currentProfile.getDefaultOutgoingPolicy();
+    return UFW::Types::toString(policy_t);
 }

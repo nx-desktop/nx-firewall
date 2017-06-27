@@ -15,17 +15,12 @@ class UfwClient : public QObject
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(bool isBusy READ isBusy NOTIFY isBusyChanged)
     Q_PROPERTY(QString status READ status NOTIFY statusChanged)
+    Q_PROPERTY(QString defaultIncomingPolicy READ defaultIncomingPolicy WRITE setDefaultIncomingPolicy NOTIFY defaultIncomingPolicyChanged)
+    Q_PROPERTY(QString defaultOutgoingPolicy READ defaultOutgoingPolicy WRITE setDefaultOutgoingPolicy NOTIFY defaultOutgoingPolicyChanged)
 public:
     explicit UfwClient(QObject *parent = nullptr);
 
-    bool enabled() const;
-    void setEnabled(const bool &enabled);
-
-    bool isBusy() const;
-    void setupActions();
-    QString status() const;
     Q_INVOKABLE RuleListModel* rules() const;
-
     Q_INVOKABLE RuleWrapper* getRule(int index);
     Q_INVOKABLE void addRule(RuleWrapper * rule);
     Q_INVOKABLE void removeRule(int index);
@@ -33,16 +28,29 @@ public:
 
     Q_INVOKABLE static QStringList getKnownProtocols();
     Q_INVOKABLE static QStringList getKnownInterfaces();
+
+    bool enabled() const;
+    bool isBusy() const;
+    QString status() const;
+    QString defaultIncomingPolicy() const;
+    QString defaultOutgoingPolicy() const;
+
 signals:
     void isBusyChanged(const bool isBusy);
     void enabledChanged(const bool enabled);
     void statusChanged(const QString &status);
 
-public slots:
-    void queryStatus(bool readDefaults=true, bool listProfiles=true);
+    void defaultIncomingPolicyChanged(QString defaultIncomingPolicy);
+    void defaultOutgoingPolicyChanged(QString defaultOutgoingPolicy);
 
+public slots:
+    void setEnabled(const bool &enabled);
+    void queryStatus(bool readDefaults=true, bool listProfiles=true);
+    void setDefaultIncomingPolicy(QString defaultIncomingPolicy);
+    void setDefaultOutgoingPolicy(QString defaultOutgoingPolicy);
 
 protected:
+    void setupActions();
     void setStatus(const QString &status);
     void setBusy(const bool &busy);
     void setProfile(UFW::Profile profile);
@@ -53,7 +61,7 @@ private:
     bool                m_isBusy;
     UFW::Profile        m_currentProfile;
     RuleListModel*   m_rulesModel;
-//    UFW::Blocker       *blocker;
+    //    UFW::Blocker       *blocker;
 };
 
 #endif // UFWCLIENT_H
