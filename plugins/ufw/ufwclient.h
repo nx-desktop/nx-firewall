@@ -29,6 +29,8 @@ public:
     Q_INVOKABLE RuleWrapper* getRule(int index);
     Q_INVOKABLE void updateRule(RuleWrapper * rule);
 
+    Q_INVOKABLE static QStringList getKnownProtocols();
+    Q_INVOKABLE static QStringList getKnownInterfaces();
 signals:
     void isBusyChanged(const bool isBusy);
     void enabledChanged(const bool enabled);
