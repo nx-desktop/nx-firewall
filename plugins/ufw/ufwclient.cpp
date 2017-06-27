@@ -314,6 +314,48 @@ void UfwClient::updateRule(RuleWrapper *ruleWrapper)
     job->start();
 }
 
+void UfwClient::moveRule(int from, int to)
+{
+    QList<UFW::Rule> rules = m_currentProfile.getRules();
+    if (from < 0 || from >= rules.count()) {
+        qWarning() << __FUNCTION__ << "invalid from index";
+        return;
+    }
+
+    if (to < 0 || to >= rules.count()) {
+        qWarning() << __FUNCTION__ << "invalid to index";
+        return;
+    }
+    // Correct indices
+    from ++;
+    to ++;
+
+    QVariantMap args;
+    args["cmd"]="moveRule";
+    args["from"]=from;
+    args["to"]=to;
+    m_modifyAction.setArguments(args);
+    setStatus(i18n("Moving rule in firewall..."));
+
+    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    connect(job, &KAuth::ExecuteJob::finished, [this] (KJob *kjob)
+    {
+        auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
+
+        if (!job->error())
+        {
+            QByteArray response = job->data().value("response", "").toByteArray();
+            setProfile(UFW::Profile(response));
+        } else
+            qWarning() << job->errorString();
+
+        setStatus("");
+        setBusy(false);
+    });
+
+    job->start();
+}
+
 QStringList UfwClient::getKnownProtocols()
 {
     return QStringList() << i18n("Any") << "TCP" << "UDP";

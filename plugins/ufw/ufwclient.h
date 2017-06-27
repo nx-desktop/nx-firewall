@@ -25,6 +25,7 @@ public:
     Q_INVOKABLE void addRule(RuleWrapper * rule);
     Q_INVOKABLE void removeRule(int index);
     Q_INVOKABLE void updateRule(RuleWrapper * rule);
+    Q_INVOKABLE void moveRule(int from, int to);
 
     Q_INVOKABLE static QStringList getKnownProtocols();
     Q_INVOKABLE static QStringList getKnownInterfaces();

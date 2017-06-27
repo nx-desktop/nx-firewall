@@ -26,10 +26,12 @@ FocusScope {
 
                     // Hack to force the list to be redraw and the item return to
                     // its original position
-                    if (from == to)
+                    if (from === to)
                         listView.model.modelReset()
-                    else
+                    else {
                         listView.model.move(from, to)
+                        ufwClient.moveRule(from, to)
+                    }
                 }
 
                 onEdit: function (index) {
