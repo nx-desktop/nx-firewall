@@ -72,9 +72,9 @@ MouseArea {
             Layout.minimumWidth: 160
             text: model.to
         }
-        PlasmaComponents.Switch {
+        PlasmaComponents.Label {
             Layout.minimumWidth: 60
-            text: model.ipv6
+            text: model.ipv6 ? "IPv6" : ""
         }
         PlasmaComponents.Label {
             Layout.leftMargin: 12

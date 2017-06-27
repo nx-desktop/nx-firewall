@@ -6,6 +6,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
 FocusScope {
+    id: rulesViewRoot
     property alias model: listView.model
 
     ScrollView {
@@ -28,11 +29,14 @@ FocusScope {
                 }
 
                 onEdit: function (index) {
-                    print(index)
                     var rule = ufwClient.getRule(index)
-                    ruleDeatils.rule = rule;
-                    print(rule.policy, rule.position)
-                    ruleDeatils.open()
+                    ruleDetailsLoader.setSource("RuleEdit.qml",
+                                                {"rule": rule,
+                                                    "x": 0,
+                                                    "y": 0,
+                                                    "height": rulesViewRoot.height,
+                                                    "width": rulesViewRoot.width
+                                                })
                 }
             }
         }
@@ -50,15 +54,8 @@ FocusScope {
     }
 
 
-    RuleEdit {
-        id: ruleDeatils
-        x: 0
-        y: 0
-        height: parent.height
-        width: parent.width
-
-        onAccept: function (rule) {
-            ufwClient.updateRule(rule);
-        }
+    Loader {
+        id: ruleDetailsLoader
+        anchors.fill: parent
     }
 }

@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QVariantMap>
+#include <QNetworkInterface>
 
 #include <KLocalizedString>
 
@@ -169,7 +170,6 @@ void UfwClient::updateRule(RuleWrapper *ruleWrapper)
         if (!job->error())
         {
             QByteArray response = job->data().value("response", "").toByteArray();
-            qDebug() << response;
             setProfile(UFW::Profile(response));
         } else
             qWarning() << job->errorString();
@@ -179,4 +179,21 @@ void UfwClient::updateRule(RuleWrapper *ruleWrapper)
     });
 
     job->start();
+}
+
+QStringList UfwClient::getKnownProtocols()
+{
+    return QStringList() << i18n("Any") << "TCP" << "UDP";
+}
+
+QStringList UfwClient::getKnownInterfaces()
+{
+    QStringList interfaces_names;
+    interfaces_names << i18n("Any");
+
+    QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
+    for (QNetworkInterface iface : interfaces)
+        interfaces_names << iface.name();
+
+    return interfaces_names;
 }

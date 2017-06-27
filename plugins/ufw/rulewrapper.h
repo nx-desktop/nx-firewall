@@ -16,7 +16,7 @@ class RuleWrapper : public QObject
     Q_PROPERTY(QString destinationAddress READ destinationAddress WRITE setDestinationAddress NOTIFY destinationAddressChanged)
     Q_PROPERTY(QString destinationPort READ destinationPort WRITE setDestinationPort NOTIFY destinationPortChanged)
     Q_PROPERTY(int protocol READ protocol WRITE setProtocol NOTIFY protocolChanged)
-    Q_PROPERTY(QString interface READ interface WRITE setInterface NOTIFY interfaceChanged)
+    Q_PROPERTY(int interface READ interface WRITE setInterface NOTIFY interfaceChanged)
     Q_PROPERTY(QString logging READ logging WRITE setLogging NOTIFY loggingChanged)
     Q_PROPERTY(int position READ position WRITE setPosition NOTIFY positionChanged)
 public:
@@ -30,7 +30,7 @@ public:
     QString destinationAddress() const;
     QString destinationPort() const;
     int protocol() const;
-    QString interface() const;
+    int interface() const;
     QString logging() const;
 
     UFW::Rule getRule();
@@ -44,7 +44,7 @@ signals:
     void destinationAddressChanged(QString destinationAddress);
     void destinationPortChanged(QString destinationPort);
     void protocolChanged(int protocol);
-    void interfaceChanged(QString interface);
+    void interfaceChanged(int interface);
     void loggingChanged(QString logging);
     void incomingChanged(bool incoming);
 
@@ -58,13 +58,14 @@ public slots:
     void setDestinationAddress(QString destinationAddress);
     void setDestinationPort(QString destinationPort);
     void setProtocol(int protocol);
-    void setInterface(QString interface);
+    void setInterface(int interface);
     void setLogging(QString logging);
 
     void setPosition(int position);
 
 private:
     UFW::Rule m_rule;
+    int m_interface;
 };
 
 #endif // RULEWRAPPER_H

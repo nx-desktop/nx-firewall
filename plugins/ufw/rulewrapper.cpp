@@ -1,16 +1,22 @@
 #include "rulewrapper.h"
 
 #include "types.h"
+#include "ufwclient.h"
+
 #include <QDebug>
 
-RuleWrapper::RuleWrapper(QObject *parent) : QObject(parent)
+RuleWrapper::RuleWrapper(QObject *parent) : QObject(parent), m_interface(0)
 {
-
 }
 
 RuleWrapper::RuleWrapper(UFW::Rule rule, QObject *parent) : QObject(parent), m_rule(rule)
 {
 
+    QStringList interfaces = UfwClient::getKnownInterfaces();
+    QString interface_name = m_rule.getInterfaceIn();
+
+    int iface_index = interfaces.indexOf(interface_name);
+    m_interface = iface_index == -1 ? 0 : iface_index;
 }
 
 QString RuleWrapper::policy() const
@@ -50,9 +56,9 @@ int RuleWrapper::protocol() const
     return protocol;
 }
 
-QString RuleWrapper::interface() const
+int RuleWrapper::interface() const
 {
-    return m_rule.getInterfaceIn();
+    return m_interface;
 }
 
 QString RuleWrapper::logging() const
@@ -136,12 +142,20 @@ void RuleWrapper::setProtocol(int protocol)
     emit protocolChanged(protocol);
 }
 
-void RuleWrapper::setInterface(QString interface)
+void RuleWrapper::setInterface(int interface)
 {
-    if (m_rule.getInterfaceIn().compare(interface) == 0)
+    if (m_interface == interface)
         return;
 
-    m_rule.setInterfaceIn(interface);
+    if (interface == 0)
+        m_rule.setInterfaceIn("");
+    else {
+        QStringList interfaces  = UfwClient::getKnownInterfaces();
+        m_rule.setInterfaceIn(interfaces.at(interface));
+    }
+
+    m_interface = interface;
+    qDebug() << "new iface" << m_rule.getInterfaceIn();
     emit interfaceChanged(interface);
 }
 
