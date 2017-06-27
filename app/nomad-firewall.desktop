@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=0.1.0
+Encoding=UTF-8
+Name=Nomad Firewall
+Exec=nomad-firewall
+Comment=Nomad Firewall - Secure your workstation!
+Icon=security-high
+Terminal=false
+Categories=Qt;KDE;Network;Settings;Security;
