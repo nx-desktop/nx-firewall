@@ -41,6 +41,10 @@ FocusScope {
                                                     width: rulesViewRoot.width
                                                 })
                 }
+
+                onRemove: function( index ) {
+                    ufwClient.removeRule(index);
+                }
             }
         }
     }

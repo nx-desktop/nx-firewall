@@ -182,6 +182,41 @@ void UfwClient::addRule(RuleWrapper *ruleWrapper)
     job->start();
 }
 
+void UfwClient::removeRule(int index)
+{
+    if (index < 0 || index >= m_currentProfile.getRules().count()) {
+        qWarning() << __FUNCTION__ << "invalid rule index";
+        return;
+    }
+
+    // Correct index
+    index ++;
+
+    QVariantMap args;
+    args["cmd"]="removeRule";
+    args["index"]=QString().setNum(index);
+    m_modifyAction.setArguments(args);
+    setStatus(i18n("Removing rule from firewall..."));
+
+    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
+    {
+        auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
+
+        if (!job->error())
+        {
+            QByteArray response = job->data().value("response", "").toByteArray();
+            setProfile(UFW::Profile(response));
+        } else
+            qWarning() << job->errorString();
+
+        setStatus("");
+        setBusy(false);
+    });
+
+    job->start();
+}
+
 void UfwClient::updateRule(RuleWrapper *ruleWrapper)
 {
     if (ruleWrapper == NULL) {
