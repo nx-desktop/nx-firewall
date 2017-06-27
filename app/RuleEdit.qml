@@ -13,10 +13,19 @@ Popup {
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
     signal accept(var rule)
+    property var rule: UFW.Rule {
+        policy: "deny"
+        incoming: true
+        logging: "none"
+    }
+    property bool newRule: false
 
-    property var rule
     onAccept: {
-        ufwClient.updateRule(rule)
+        if (newRule)
+            ufwClient.addRule(rule)
+        else
+            ufwClient.updateRule(rule)
+
         close()
     }
     Component.onCompleted: open()
@@ -103,9 +112,9 @@ Popup {
                     placeholderText: "0.0.0.0/0"
                     text: rule.sourceAddress
                     onTextChanged: rule.sourceAddress = text
-                    property var originalValue;
+                    property var originalValue
 
-                    Component.onCompleted: originalValue = rule.sourceAddress;
+                    Component.onCompleted: originalValue = rule.sourceAddress
                 }
                 PlasmaComponents.CheckBox {
                     text: i18n("Any")
@@ -121,16 +130,15 @@ Popup {
                     text: rule.sourcePort
                     onTextChanged: rule.sourcePort = text
                     placeholderText: "0/0"
-                    property var originalValue;
+                    property var originalValue
 
-                    Component.onCompleted: originalValue = rule.sourcePort;
+                    Component.onCompleted: originalValue = rule.sourcePort
                 }
                 PlasmaComponents.CheckBox {
                     text: i18n("Any")
                     Layout.fillWidth: true
 
-                    checked: sourcePort.text == ""
-                             || sourcePort.text == "0/0"
+                    checked: sourcePort.text == "" || sourcePort.text == "0/0"
                     onClicked: sourcePort.text = checked ? "" : sourcePort.originalValue
                 }
             }

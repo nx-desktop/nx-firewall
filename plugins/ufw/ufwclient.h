@@ -27,6 +27,7 @@ public:
     Q_INVOKABLE RuleListModel* rules() const;
 
     Q_INVOKABLE RuleWrapper* getRule(int index);
+    Q_INVOKABLE void addRule(RuleWrapper * rule);
     Q_INVOKABLE void updateRule(RuleWrapper * rule);
 
     Q_INVOKABLE static QStringList getKnownProtocols();
