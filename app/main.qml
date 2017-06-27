@@ -51,11 +51,65 @@ ApplicationWindow {
                 onClicked: ufwClient.enabled = !ufwClient.enabled
             }
         }
+
+        RowLayout {
+            Layout.topMargin: 12
+            PlasmaExtras.Heading {
+                level: 4
+                text: i18n("Default Inconmig Policy:")
+            }
+
+            PlasmaComponents.ButtonRow {
+                Layout.leftMargin: 24
+                PlasmaComponents.Button {
+                    text: i18n("Allow")
+                    checked: ufwClient.defaultIncomingPolicy === "allow"
+                    onClicked: ufwClient.defaultIncomingPolicy = "allow"
+                }
+                PlasmaComponents.Button {
+                    text: i18n("Deny")
+                    checked: ufwClient.defaultIncomingPolicy === "deny"
+                    onClicked: ufwClient.defaultIncomingPolicy = "deny"
+                }
+                PlasmaComponents.Button {
+                    text: i18n("Reject")
+                    checked: ufwClient.defaultIncomingPolicy === "reject"
+                    onClicked: ufwClient.defaultIncomingPolicy = "reject"
+                }
+            }
+        }
+
+        RowLayout {
+            PlasmaExtras.Heading {
+                level: 4
+                text: i18n("Default Outgoing Policy:")
+            }
+
+            PlasmaComponents.ButtonRow {
+                Layout.leftMargin: 24
+                PlasmaComponents.Button {
+                    text: i18n("Allow")
+                    checked: ufwClient.defaultOutgoingPolicy === "allow"
+                    onClicked: ufwClient.defaultOutgoingPolicy = "allow"
+                }
+                PlasmaComponents.Button {
+                    text: i18n("Deny")
+                    checked: ufwClient.defaultOutgoingPolicy === "deny"
+                    onClicked: ufwClient.defaultOutgoingPolicy = "deny"
+                }
+                PlasmaComponents.Button {
+                    text: i18n("Reject")
+                    checked: ufwClient.defaultOutgoingPolicy === "reject"
+                    onClicked: ufwClient.defaultOutgoingPolicy = "reject"
+                }
+            }
+        }
     }
 
 
     Rectangle {
         anchors.top: globalControls.bottom
+        anchors.topMargin: 18
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
