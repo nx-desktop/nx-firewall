@@ -12,10 +12,12 @@ FocusScope {
     property alias model: listView.model
 
     PlasmaExtras.ScrollArea {
+        id: listScrollArea
         anchors.fill: parent
 
         ListView {
             id: listView
+            bottomMargin: 48 * 2
             delegate: RuleListItem {
                 onMove: function (from, to) {
                     // Force valid positions

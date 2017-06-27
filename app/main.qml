@@ -1,8 +1,10 @@
 import QtQuick 2.6
+import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.extras 2.0 as PlasmaExtras
 
 import org.nomad.ufw 1.0
 
@@ -17,13 +19,50 @@ ApplicationWindow {
         id: ufwClient
     }
 
+    ColumnLayout {
+        id: globalControls
+
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        anchors.margins: 12
+        anchors.leftMargin: 18
+
+        RowLayout {
+            Rectangle {
+                height: 28
+                width: 28
+                radius: 14
+                color: ufwClient.enabled ? "lightgreen" : "lightgray"
+            }
+
+            PlasmaExtras.Heading {
+                level: 3
+                Layout.leftMargin: 12
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignLeft
+                text: ufwClient.enabled ? i18n("Firewall enabled") : i18n(
+                                              "Firewall disabled")
+            }
+
+            PlasmaComponents.Button {
+                text: ufwClient.enabled ? i18n("Disable") : i18n("Enable")
+                onClicked: ufwClient.enabled = !ufwClient.enabled
+            }
+        }
+    }
+
 
     Rectangle {
-        anchors.centerIn: parent
+        anchors.top: globalControls.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+
+        anchors.margins: 12
         color: "white"
 
-        height: 500
-        width: 800
         RulesView {
             anchors.fill: parent
             model: ufwClient.rules()
