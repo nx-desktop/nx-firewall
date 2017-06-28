@@ -1,16 +1,18 @@
 [Desktop Entry]
 Name=Nomad Firewall
 Comment=Adjust your firewall settings
+Encoding=UTF-8
 
 Icon=security-high
 Type=Service
-X-KDE-ServiceTypes=KCModule
-X-KDE-Library=kcm_nomadFirewall
+# X-KDE-ServiceTypes=KCModule
+X-KDE-ServiceTypes=Plasma/Generic
+# X-KDE-Library=kcm_nomadFirewall
 
 X-Plasma-API=declarativeappletscript
 X-Plasma-MainScript=ui/main.qml
 
-X-KDE-PluginInfo-Name=kcm_nomadFirewall
+X-KDE-PluginInfo-Name=org.nxos.firewall
 X-KDE-PluginInfo-Category=network
 X-KDE-PluginInfo-Author=Alexis López Zubieta
 X-KDE-PluginInfo-Email=azubieta90gmail.com

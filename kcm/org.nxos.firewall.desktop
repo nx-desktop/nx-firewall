@@ -1,0 +1,17 @@
+[Desktop Entry]
+Icon=security-high
+Exec=kcmshell5 org.nxos.firewall
+
+Type=Service
+X-KDE-ServiceTypes=KCModule
+X-KDE-Library=org.nxos.firewall
+X-KDE-ParentApp=kcontrol
+X-KDE-System-Settings-Parent-Category=networksettings
+X-KDE-Weight=80
+X-DocPath=kcontrol5/org.nxos.firewall/index.html
+
+
+Name=Nomad Firewall
+Comment=Nomad Firewall - Secure your workstation!
+X-KDE-Keywords=firewall, network, security
+Categories=Qt;KDE;X-KDE-settings-looknfeel;
