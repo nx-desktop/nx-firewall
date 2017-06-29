@@ -36,6 +36,8 @@
 #include <KAuth>
 #include <KAuthHelperSupport>
 
+#include "ufw_helper_config.h"
+
 namespace UFW
 {
 
@@ -342,7 +344,7 @@ ActionReply Helper::run(const QStringList &args, const QString &cmd)
     ActionReply reply;
 
     qDebug() << __FUNCTION__ << args;
-    ufw.start("/usr/lib/libexec/nomad_ufw_plugin_helper.py", args, QIODevice::ReadOnly);
+    ufw.start(UFW_PLUGIN_HELPER_PATH, args, QIODevice::ReadOnly);
     if (ufw.waitForStarted())
         ufw.waitForFinished();
 
