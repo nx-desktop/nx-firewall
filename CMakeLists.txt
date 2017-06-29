@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.18.12)
 project(nomad-firewall)
 
 set(KF5_MIN_VERSION "5.30.0")
-set(QT_MIN_VERSION "5.5.0")
+set(QT_MIN_VERSION "5.6.0")
 
 #-----------------------------------------------------------------------------
 #                              DEPENDENCIES
@@ -45,6 +45,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Werror -O2")
 #                               SOURCES
 #-----------------------------------------------------------------------------
 add_subdirectory(kcm)
+add_subdirectory(plugins)
+add_subdirectory(app)
 #-----------------------------------------------------------------------------
 #                               BUILD SUMMARY
 #-----------------------------------------------------------------------------
