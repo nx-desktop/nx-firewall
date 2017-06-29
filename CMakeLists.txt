@@ -17,12 +17,14 @@ find_package(Qt5 REQUIRED COMPONENTS
 )
 
 # KDE5
-find_package(ECM REQUIRED)
-list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+find_package(ECM REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+
 include(KDEInstallDirs)
-include(FeatureSummary)
-include(KDECMakeSettings)
 include(KDECompilerSettings)
+include(KDECMakeSettings)
+
+include(FeatureSummary)
 
 find_package(KF5 REQUIRED COMPONENTS 
     CoreAddons
