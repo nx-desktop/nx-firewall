@@ -5,9 +5,8 @@ Encoding=UTF-8
 
 Icon=security-high
 Type=Service
-# X-KDE-ServiceTypes=KCModule
+X-KDE-ServiceTypes=KCModule
 X-KDE-ServiceTypes=Plasma/Generic
-# X-KDE-Library=kcm_nomadFirewall
 
 X-Plasma-API=declarativeappletscript
 X-Plasma-MainScript=ui/main.qml
