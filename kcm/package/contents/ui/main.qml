@@ -6,10 +6,16 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 
+import org.kde.kcm 1.0
 import org.nomad.ufw 1.0
 
 Item {
     id: mainWindow
+
+    implicitWidth: units.gridUnit * 44
+    implicitHeight: units.gridUnit * 50
+    clip: true
+
     UfwClient {
         id: ufwClient
     }
@@ -99,6 +105,11 @@ Item {
                 }
             }
         }
+    }
+
+    Loader {
+        id: ruleDetailsLoader
+        anchors.fill: parent
     }
 
 

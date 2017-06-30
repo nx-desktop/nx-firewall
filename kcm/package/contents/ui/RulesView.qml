@@ -11,6 +11,8 @@ FocusScope {
     id: rulesViewRoot
     property alias model: listView.model
 
+    clip: true
+
     PlasmaExtras.ScrollArea {
         id: listScrollArea
         anchors.fill: parent
@@ -41,8 +43,8 @@ FocusScope {
                                                     newRule: false,
                                                     x: 0,
                                                     y: 0,
-                                                    height: rulesViewRoot.height,
-                                                    width: rulesViewRoot.width
+                                                    height: mainWindow.height,
+                                                    width: mainWindow.width
                                                 })
                 }
 
@@ -63,8 +65,8 @@ FocusScope {
                                             newRule: true,
                                             x: 0,
                                             y: 0,
-                                            height: rulesViewRoot.height,
-                                            width: rulesViewRoot.width
+                                            height: mainWindow.height,
+                                            width: mainWindow.width
                                         })
         }
 
@@ -72,10 +74,5 @@ FocusScope {
         anchors.bottomMargin: 12
         anchors.right: parent.right
         anchors.rightMargin: 12
-    }
-
-    Loader {
-        id: ruleDetailsLoader
-        anchors.fill: parent
     }
 }

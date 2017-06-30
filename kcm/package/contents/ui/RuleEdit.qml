@@ -34,14 +34,7 @@ Popup {
         anchors.fill: parent
 
         columns: 6
-        rowSpacing: 24
-
-        PlasmaExtras.Heading {
-            level: 2
-            text: i18n("Rule details")
-
-            Layout.columnSpan: 6
-        }
+//        rowSpacing: 24
 
         PlasmaExtras.Heading {
             level: 4
@@ -240,11 +233,6 @@ Popup {
             }
         }
 
-        Item {
-            Layout.columnSpan: 6
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-        }
 
         PlasmaComponents.Button {
             text: i18n("Cancel")
