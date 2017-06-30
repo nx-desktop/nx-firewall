@@ -16,7 +16,7 @@ target_link_libraries(org.nxos.firewall
     KF5::QuickAddons)
 
 
-kcoreaddons_desktop_to_json(org.nxos.firewall org.nxos.firewall.desktop)
+kcoreaddons_desktop_to_json(org.nxos.firewall org.nxos.firewall.desktop SERVICE_TYPES kcmodule.desktop)
 
 #this desktop file is installed only for retrocompatibility with sycoca
 install(FILES org.nxos.firewall.desktop DESTINATION ${SERVICES_INSTALL_DIR})
