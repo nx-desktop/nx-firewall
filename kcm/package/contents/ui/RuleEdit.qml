@@ -20,6 +20,11 @@ Popup {
     }
     property bool newRule: false
 
+    background: PlasmaCore.FrameSvgItem {
+        anchors.fill: parent
+        imagePath: "opaque/dialogs/background"
+    }
+
     onAccept: {
         if (newRule)
             ufwClient.addRule(rule)

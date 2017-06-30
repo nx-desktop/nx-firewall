@@ -112,8 +112,7 @@ Item {
         anchors.fill: parent
     }
 
-
-    Rectangle {
+    PlasmaCore.FrameSvgItem {
         anchors.top: globalControls.bottom
         anchors.topMargin: 18
         anchors.left: parent.left
@@ -121,13 +120,15 @@ Item {
         anchors.bottom: parent.bottom
 
         anchors.margins: 12
-        color: "white"
 
         RulesView {
             anchors.fill: parent
             model: ufwClient.rules()
         }
+
+        imagePath: "opaque/widgets/panel-background"
     }
+
 
     PlasmaComponents.Label {
         anchors.bottom: parent.bottom
