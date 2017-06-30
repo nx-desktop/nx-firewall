@@ -1,6 +1,7 @@
 #include "ufwclient.h"
 
 #include <QDebug>
+#include <QTimer>
 #include <QVariantMap>
 #include <QNetworkInterface>
 
@@ -12,7 +13,16 @@ UfwClient::UfwClient(QObject *parent) :
     m_isBusy(false),
     m_rulesModel( new RuleListModel(this))
 {
-    setupActions();
+    // HACK: Quering the firewall status in this context
+    // creates a segmentation fault error in some situations
+    // due to an usage of the rootObject before it's
+    // initialization. So, it's delayed a little.
+    //    refresh();
+    QTimer::singleShot(100, this, &UfwClient::refresh);
+}
+
+void UfwClient::refresh()
+{
     queryStatus();
 }
 
@@ -26,12 +36,13 @@ void UfwClient::setEnabled(const bool &enabled)
     QVariantMap args;
     args["cmd"]="setStatus";
     args["status"] = enabled;
-    m_modifyAction.setArguments(args);
+    KAuth::Action modifyAction = buildModifyAction(args);
+
     m_status = enabled ? i18n("Enabling the firewall...") : i18n("Disabling the firewall...");
     m_isBusy = true;
 
 
-    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    KAuth::ExecuteJob *job = modifyAction.execute();
     connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
     {
         auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
@@ -65,10 +76,12 @@ void UfwClient::queryStatus(bool readDefaults, bool listProfiles)
     QVariantMap args;
     args["defaults"]=readDefaults;
     args["profiles"]=listProfiles;
-    m_queryAction.setArguments(args);
+    KAuth::Action queryAction = buildQueryAction(args);
+
     setStatus(i18n("Querying firewall status..."));
 
-    KAuth::ExecuteJob *job = m_queryAction.execute();
+
+    KAuth::ExecuteJob *job = queryAction.execute();
     connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
     {
         auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
@@ -92,11 +105,11 @@ void UfwClient::setDefaultIncomingPolicy(QString defaultIncomingPolicy)
     QVariantMap args;
     args["cmd"]="setDefaults";
     args["xml"]=QString("<defaults incoming=\"")+defaultIncomingPolicy+QString("\" />");
-    m_modifyAction.setArguments(args);
+    KAuth::Action modifyAction = buildModifyAction(args);
     m_status = i18n("Setting firewall default incomming policy...");
     m_isBusy = true;
 
-    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    KAuth::ExecuteJob *job = modifyAction.execute();
     connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
     {
         auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
@@ -118,11 +131,11 @@ void UfwClient::setDefaultOutgoingPolicy(QString defaultOutgoingPolicy)
     QVariantMap args;
     args["cmd"]="setDefaults";
     args["xml"]=QString("<defaults outgoing=\"")+defaultOutgoingPolicy+QString("\" />");
-    m_modifyAction.setArguments(args);
+    KAuth::Action modifyAction = buildModifyAction(args);
     m_status = i18n("Setting firewall default outgoing policy...");
     m_isBusy = true;
 
-    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    KAuth::ExecuteJob *job = modifyAction.execute();
     connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
     {
         auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
@@ -174,13 +187,22 @@ void UfwClient::setProfile(UFW::Profile profile)
     }
 }
 
-
-void UfwClient::setupActions()
+KAuth::Action UfwClient::buildQueryAction(const QVariantMap &arguments)
 {
-    m_queryAction=KAuth::Action("org.nomad.ufw.query");
-    m_modifyAction=KAuth::Action("org.nomad.ufw.modify");
-    m_queryAction.setHelperId("org.nomad.ufw");
-    m_modifyAction.setHelperId("org.nomad.ufw");
+    auto action = KAuth::Action("org.nomad.ufw.query");
+    action.setHelperId("org.nomad.ufw");
+    action.setArguments(arguments);
+
+    return action;
+}
+
+KAuth::Action UfwClient::buildModifyAction(const QVariantMap &arguments)
+{
+    auto action = KAuth::Action("org.nomad.ufw.modify");
+    action.setHelperId("org.nomad.ufw");
+    action.setArguments(arguments);
+
+    return action;
 }
 
 QString UfwClient::status() const
@@ -222,10 +244,10 @@ void UfwClient::addRule(RuleWrapper *ruleWrapper)
     args["count"]=1;
     args["xml"+QString().setNum(0)]=rule.toXml();
 
-    m_modifyAction.setArguments(args);
+    KAuth::Action modifyAction = buildModifyAction(args);
     setStatus(i18n("Adding rule..."));
 
-    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    KAuth::ExecuteJob *job = modifyAction.execute();
     connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
     {
         auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
@@ -257,10 +279,10 @@ void UfwClient::removeRule(int index)
     QVariantMap args;
     args["cmd"]="removeRule";
     args["index"]=QString().setNum(index);
-    m_modifyAction.setArguments(args);
+    KAuth::Action modifyAction = buildModifyAction(args);
     setStatus(i18n("Removing rule from firewall..."));
 
-    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    KAuth::ExecuteJob *job = modifyAction.execute();
     connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
     {
         auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
@@ -292,10 +314,10 @@ void UfwClient::updateRule(RuleWrapper *ruleWrapper)
     QVariantMap args;
     args["cmd"]="editRule";
     args["xml"]=rule.toXml();
-    m_modifyAction.setArguments(args);
+    KAuth::Action modifyAction = buildModifyAction(args);
     setStatus(i18n("Updating rule..."));
 
-    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    KAuth::ExecuteJob *job = modifyAction.execute();
     connect(job, &KAuth::ExecuteJob::result, [this] (KJob *kjob)
     {
         auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
@@ -334,10 +356,10 @@ void UfwClient::moveRule(int from, int to)
     args["cmd"]="moveRule";
     args["from"]=from;
     args["to"]=to;
-    m_modifyAction.setArguments(args);
+    KAuth::Action modifyAction = buildModifyAction(args);
     setStatus(i18n("Moving rule in firewall..."));
 
-    KAuth::ExecuteJob *job = m_modifyAction.execute();
+    KAuth::ExecuteJob *job = modifyAction.execute();
     connect(job, &KAuth::ExecuteJob::finished, [this] (KJob *kjob)
     {
         auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);

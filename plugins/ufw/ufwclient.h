@@ -20,6 +20,7 @@ class UfwClient : public QObject
 public:
     explicit UfwClient(QObject *parent = nullptr);
 
+    Q_INVOKABLE void refresh();
     Q_INVOKABLE RuleListModel* rules() const;
     Q_INVOKABLE RuleWrapper* getRule(int index);
     Q_INVOKABLE void addRule(RuleWrapper * rule);
@@ -51,14 +52,14 @@ public slots:
     void setDefaultOutgoingPolicy(QString defaultOutgoingPolicy);
 
 protected:
-    void setupActions();
     void setStatus(const QString &status);
     void setBusy(const bool &busy);
     void setProfile(UFW::Profile profile);
+    KAuth::Action buildQueryAction(const QVariantMap &arguments);
+    KAuth::Action buildModifyAction(const QVariantMap &arguments);
+
 private:
     QString m_status;
-    KAuth::Action       m_queryAction,
-                        m_modifyAction;
     bool                m_isBusy;
     UFW::Profile        m_currentProfile;
     RuleListModel*   m_rulesModel;
