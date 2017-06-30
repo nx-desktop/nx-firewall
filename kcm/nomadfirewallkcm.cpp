@@ -9,7 +9,7 @@
 #include "version.h"
 
 K_PLUGIN_FACTORY_WITH_JSON(NomadFirewallKCMFactory,
-                           "org.nxos.firewall-kcms-metadata.json",
+                           "org_nxos_firewall.json",
                            registerPlugin<NomadFirewallKCM>(); )
 
 K_EXPORT_PLUGIN(NomadFirewallKCMFactory("org.nxos.firewall" /* kcm name */, "org.nxos.firewall" /* catalog name */))

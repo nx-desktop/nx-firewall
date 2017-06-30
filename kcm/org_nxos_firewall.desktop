@@ -1,6 +1,6 @@
 [Desktop Entry]
 Icon=security-high
-Exec=kcmshell5 org.nxos.firewall
+Exec=kcmshell5 org_nxos_firewall
 
 Type=Service
 X-KDE-ServiceTypes=KCModule
