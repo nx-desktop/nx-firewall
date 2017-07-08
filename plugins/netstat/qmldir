@@ -1,0 +1,2 @@
+module org.nomad.netstat
+plugin nomad_netstat_plugin
