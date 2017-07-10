@@ -14,7 +14,8 @@ public Q_SLOTS:
     KAuth::ActionReply queryActiveConnections(const QVariantMap &args);
 
 protected:
-
+    QVariantList parseOutput(const QByteArray &netstatOutput);
+    QString extractAndStrip(const QString &src,const int &index, const int  &size);
 };
 
 #endif // NETSTATHELPER_H
