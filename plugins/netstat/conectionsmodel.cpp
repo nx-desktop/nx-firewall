@@ -7,6 +7,10 @@
 ConnectionsModel::ConnectionsModel(QObject *parent)
     : QAbstractListModel(parent), m_queryRunning(false)
 {
+    connect(&timer, &QTimer::timeout, this, &ConnectionsModel::refreshConnections);
+    timer.setInterval(30000);
+    timer.start();
+
     refreshConnections();
 }
 
@@ -17,7 +21,6 @@ int ConnectionsModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    // FIXME: Implement me!
     return m_connectionsData.size();
 }
 
@@ -26,8 +29,16 @@ QVariant ConnectionsModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
+    if (index.row() < 0 || index.row() >= m_connectionsData.size())
+        return QVariant();
+
     QVariantList connection = m_connectionsData.at(index.row()).toList();
-    return connection.at(role - ProtocolRole);
+
+    int value_index = role - ProtocolRole;
+    if (value_index < 0 || value_index >= connection.size())
+        return QVariant();
+
+    return connection.at(value_index);
 }
 
 QHash<int, QByteArray> ConnectionsModel::roleNames() const
@@ -62,7 +73,12 @@ void ConnectionsModel::refreshConnections()
         auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
         if (!job->error())
         {
+            beginResetModel();
             m_connectionsData = job->data().value("connections", QVariantList()).toList();
+
+//            qDebug() << m_connectionsData;
+
+            endResetModel();
         } else
             qWarning() << "BACKEND ERROR: " << job->error() << job->errorText();
 

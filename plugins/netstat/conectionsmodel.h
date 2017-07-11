@@ -2,6 +2,9 @@
 #define CONECTIONSMODEL_H
 
 #include <QAbstractListModel>
+#include <QTimer>
+
+#include <KAuth>
 
 class ConnectionsModel : public QAbstractListModel
 {
@@ -31,6 +34,7 @@ protected slots:
 private:
     bool m_queryRunning;
     QVariantList m_connectionsData;
+    QTimer timer;
 };
 
 #endif // CONECTIONSMODEL_H
