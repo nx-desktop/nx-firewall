@@ -4,6 +4,7 @@
 #include <QVariantMap>
 #include <KAuth>
 
+using namespace KAuth;
 class NetstatHelper : public QObject
 {
     Q_OBJECT
@@ -11,9 +12,9 @@ public:
     NetstatHelper();
 
 public Q_SLOTS:
-    KAuth::ActionReply queryActiveConnections(const QVariantMap &args);
+    ActionReply query(const QVariantMap &args);
 
-protected:
+private:
     QVariantList parseOutput(const QByteArray &netstatOutput);
     QString extractAndStrip(const QString &src,const int &index, const int  &size);
 };

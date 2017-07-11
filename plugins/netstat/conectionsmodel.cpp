@@ -1,11 +1,16 @@
 #include "conectionsmodel.h"
 
-ConectionsModel::ConectionsModel(QObject *parent)
-    : QAbstractListModel(parent)
+#include <QDebug>
+
+#include <KAuth>
+
+ConnectionsModel::ConnectionsModel(QObject *parent)
+    : QAbstractListModel(parent), m_queryRunning(false)
 {
+    refreshConnections();
 }
 
-int ConectionsModel::rowCount(const QModelIndex &parent) const
+int ConnectionsModel::rowCount(const QModelIndex &parent) const
 {
     // For list models only the root node (an invalid parent) should return the list's size. For all
     // other (valid) parents, rowCount() should return 0 so that it does not become a tree model.
@@ -13,14 +18,57 @@ int ConectionsModel::rowCount(const QModelIndex &parent) const
         return 0;
 
     // FIXME: Implement me!
-    return 0;
+    return m_connectionsData.size();
 }
 
-QVariant ConectionsModel::data(const QModelIndex &index, int role) const
+QVariant ConnectionsModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
 
-    // FIXME: Implement me!
-    return QVariant();
+    QVariantList connection = m_connectionsData.at(index.row()).toList();
+    return connection.at(role - ProtocolRole);
 }
+
+QHash<int, QByteArray> ConnectionsModel::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+    roles[ProtocolRole] = "protocol";
+    roles[LocalAddressRole] = "localAddress";
+    roles[ForeignAddressRole] = "foreignAddress";
+    roles[StatusRole] = "status";
+    roles[PidRole] = "pid";
+    roles[ProgramRole] = "program";
+
+    return roles;
+}
+
+void ConnectionsModel::refreshConnections()
+{
+    if (m_queryRunning)
+    {
+        qWarning() << "Netstat client is bussy";
+        return;
+    }
+
+    m_queryRunning = true;
+
+    KAuth::Action queryAction(QLatin1String("org.nxos.netstat.query"));
+    queryAction.setHelperId("org.nxos.netstat");
+
+    KAuth::ExecuteJob *job = queryAction.execute();
+    connect(job, &KAuth::ExecuteJob::finished, [this] (KJob *kjob)
+    {
+        auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
+        if (!job->error())
+        {
+            m_connectionsData = job->data().value("connections", QVariantList()).toList();
+        } else
+            qWarning() << "BACKEND ERROR: " << job->error() << job->errorText();
+
+        m_queryRunning = false;
+    });
+
+    job->start();
+}
+

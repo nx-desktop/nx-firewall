@@ -1,8 +1,0 @@
-[Domain]
-Name=Netstat
-Icon=network-card
-[org.nomad.netstat.query]
-Name=Query network connections
-Description=Query network connections
-Policy=yes
-Persistence=session

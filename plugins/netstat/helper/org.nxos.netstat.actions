@@ -1,0 +1,10 @@
+[Domain]
+Name=NXOS Firewall KCM netstat utils
+Icon=network-card
+URL=
+
+[org.nxos.netstat.query]
+Name=Read connections
+Description=Get system open connections.
+Policy=yes
+Persistence=session

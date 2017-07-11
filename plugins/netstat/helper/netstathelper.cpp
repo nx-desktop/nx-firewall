@@ -11,14 +11,13 @@ NetstatHelper::NetstatHelper()
 
 }
 
-KAuth::ActionReply NetstatHelper::queryActiveConnections(const QVariantMap &args)
+KAuth::ActionReply NetstatHelper::query(const QVariantMap &args)
 {
-    Q_UNUSED(args)
     KAuth::ActionReply reply;
 
     QProcess    netstat;
     QStringList netstatArgs("-ntuap");
-    qDebug() << __FUNCTION__ ;
+    qDebug() << "run" << NETSTAT_BINARY_PATH << netstatArgs;
 
     netstat.start(NETSTAT_BINARY_PATH, netstatArgs, QIODevice::ReadOnly);
     if (netstat.waitForStarted())
@@ -26,15 +25,16 @@ KAuth::ActionReply NetstatHelper::queryActiveConnections(const QVariantMap &args
 
     int exitCode(netstat.exitCode());
 
-    if(0!=exitCode)
+    if(0 != exitCode)
     {
         qWarning() << "netstat command exit with code: " << exitCode;
 
         reply=KAuth::ActionReply::HelperErrorReply(exitCode);
         reply.addData("response", netstat.readAllStandardError());
     } else {
-        QVariantList rawOutput = parseOutput(netstat.readAllStandardOutput());
-        reply.addData("connections", rawOutput);
+        QVariantList connections = parseOutput(netstat.readAllStandardOutput());
+//        qDebug() << connections;
+        reply.addData("connections", connections);
     }
 
     return reply;
@@ -114,4 +114,4 @@ QString NetstatHelper::extractAndStrip(const QString &src, const int &index, con
     return str;
 }
 
-KAUTH_HELPER_MAIN("org.nomad.netstat", NetstatHelper)
+KAUTH_HELPER_MAIN("org.nxos.netstat", NetstatHelper)
