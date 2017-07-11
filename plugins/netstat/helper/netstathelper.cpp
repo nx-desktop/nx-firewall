@@ -102,7 +102,7 @@ QVariantList NetstatHelper::parseOutput(const QByteArray &netstatOutput)
         }
 
 
-        connections.append(connection);
+        connections.append((QVariant) connection);
     }
 
     return connections;
