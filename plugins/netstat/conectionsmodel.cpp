@@ -36,7 +36,7 @@ QVariant ConnectionsModel::data(const QModelIndex &index, int role) const
 
     int value_index = role - ProtocolRole;
     if (value_index < 0 || value_index >= connection.size())
-        return QVariant();
+        return QString();
 
     return connection.at(value_index);
 }
