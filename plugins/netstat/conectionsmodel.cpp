@@ -11,7 +11,7 @@ ConnectionsModel::ConnectionsModel(QObject *parent)
     timer.setInterval(30000);
     timer.start();
 
-    refreshConnections();
+    QTimer::singleShot(200, this, &ConnectionsModel::refreshConnections);
 }
 
 int ConnectionsModel::rowCount(const QModelIndex &parent) const
