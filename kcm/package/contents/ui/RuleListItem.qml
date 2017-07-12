@@ -23,9 +23,9 @@ MouseArea {
         id: background
         anchors.fill: parent
         opacity: 0
-        color: "lightblue"
-        border.color: "black"
-        border.width: 1
+        color: theme.highlightColor
+
+        visible: itemRoot.containsMouse
     }
 
     RowLayout {
