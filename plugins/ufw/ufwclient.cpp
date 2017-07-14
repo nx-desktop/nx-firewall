@@ -19,6 +19,7 @@ UfwClient::UfwClient(QObject *parent) :
     // initialization. So, it's delayed a little.
     //    refresh();
     QTimer::singleShot(100, this, &UfwClient::refresh);
+    QTimer::singleShot(2000, this, &UfwClient::refreshLogs);
 }
 
 void UfwClient::refresh()
@@ -147,6 +148,54 @@ void UfwClient::setDefaultOutgoingPolicy(QString defaultOutgoingPolicy)
             queryStatus(true, false);
 
 
+    });
+
+    job->start();
+}
+
+void UfwClient::setLogsAutoRefresh(bool logsAutoRefresh)
+{
+    if (m_logsAutoRefresh == logsAutoRefresh)
+        return;
+
+    if (logsAutoRefresh) {
+        connect(&m_logsRefreshTimer, &QTimer::timeout, this, &UfwClient::refreshLogs);
+        m_logsRefreshTimer.setInterval(3000);
+        m_logsRefreshTimer.start();
+    } else {
+        disconnect(&m_logsRefreshTimer, &QTimer::timeout, this, &UfwClient::refreshLogs);
+        m_logsRefreshTimer.stop();
+    }
+
+    m_logsAutoRefresh = logsAutoRefresh;
+    emit logsAutoRefreshChanged(m_logsAutoRefresh);
+}
+
+void UfwClient::refreshLogs()
+{
+    KAuth::Action action("org.nomad.ufw.viewlog");
+    action.setHelperId("org.nomad.ufw");
+
+    QVariantMap args;
+    if (m_logs.size() > 0)
+        args["lastLine"] = m_logs.last();
+
+    action.setArguments(args);
+
+    KAuth::ExecuteJob *job = action.execute();
+    connect(job, &KAuth::ExecuteJob::finished, [this] (KJob *kjob)
+    {
+        auto job = qobject_cast<KAuth::ExecuteJob *>(kjob);
+
+        if (!job->error())
+        {
+            QStringList newLogs = job->data().value("lines", "").toStringList();
+            m_logs.append(newLogs);
+            emit logsChanged(m_logs);
+        } else
+            qWarning() << job->errorString();
+
+        setBusy(false);
     });
 
     job->start();
@@ -405,4 +454,14 @@ QString UfwClient::defaultOutgoingPolicy() const
 {
     auto policy_t = m_currentProfile.getDefaultOutgoingPolicy();
     return UFW::Types::toString(policy_t);
+}
+
+QStringList UfwClient::logs()
+{
+    return m_logs;
+}
+
+bool UfwClient::logsAutoRefresh() const
+{
+    return m_logsAutoRefresh;
 }

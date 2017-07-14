@@ -77,6 +77,26 @@ Item {
 
             }
         }
+
+        Tab {
+            title: i18n("Logs")
+
+            Item {
+                PlasmaExtras.ScrollArea {
+                anchors.fill: parent
+                    ListView {
+                    model: ufwClient.logs;
+                    delegate: PlasmaComponents.ListItem {
+                        PlasmaComponents.Label {
+                            text: ufwClient.logs[index]
+                        }
+                    }
+                }
+                }
+            }
+
+            onActiveChanged: ufwClient.logsAutoRefresh = active
+        }
     }
 
 

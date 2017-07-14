@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QTimer>
 
 #include <KAuth>
 
@@ -17,6 +18,8 @@ class UfwClient : public QObject
     Q_PROPERTY(QString status READ status NOTIFY statusChanged)
     Q_PROPERTY(QString defaultIncomingPolicy READ defaultIncomingPolicy WRITE setDefaultIncomingPolicy NOTIFY defaultIncomingPolicyChanged)
     Q_PROPERTY(QString defaultOutgoingPolicy READ defaultOutgoingPolicy WRITE setDefaultOutgoingPolicy NOTIFY defaultOutgoingPolicyChanged)
+    Q_PROPERTY(QStringList logs READ logs NOTIFY logsChanged)
+    Q_PROPERTY(bool logsAutoRefresh READ logsAutoRefresh WRITE setLogsAutoRefresh NOTIFY logsAutoRefreshChanged)
 public:
     explicit UfwClient(QObject *parent = nullptr);
 
@@ -37,6 +40,9 @@ public:
     QString defaultIncomingPolicy() const;
     QString defaultOutgoingPolicy() const;
 
+    QStringList logs();
+    bool logsAutoRefresh() const;
+
 signals:
     void isBusyChanged(const bool isBusy);
     void enabledChanged(const bool enabled);
@@ -45,11 +51,20 @@ signals:
     void defaultIncomingPolicyChanged(QString defaultIncomingPolicy);
     void defaultOutgoingPolicyChanged(QString defaultOutgoingPolicy);
 
+    void logsChanged(QStringList logs);
+
+    void logsAutoRefreshChanged(bool logsAutoRefresh);
+
 public slots:
     void setEnabled(const bool &enabled);
     void queryStatus(bool readDefaults=true, bool listProfiles=true);
     void setDefaultIncomingPolicy(QString defaultIncomingPolicy);
     void setDefaultOutgoingPolicy(QString defaultOutgoingPolicy);
+
+    void setLogsAutoRefresh(bool logsAutoRefresh);
+
+protected slots:
+        void refreshLogs();
 
 protected:
     void setStatus(const QString &status);
@@ -60,10 +75,13 @@ protected:
 
 private:
     QString m_status;
+    QStringList m_logs;
     bool                m_isBusy;
     UFW::Profile        m_currentProfile;
-    RuleListModel*   m_rulesModel;
+    RuleListModel*      m_rulesModel;
+    QTimer              m_logsRefreshTimer;
     //    UFW::Blocker       *blocker;
+    bool m_logsAutoRefresh;
 };
 
 #endif // UFWCLIENT_H
