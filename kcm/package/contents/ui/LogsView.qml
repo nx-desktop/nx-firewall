@@ -28,79 +28,18 @@ Item {
         anchors.fill: parent
         ListView {
             model: ufwClient.logs()
-            delegate: PlasmaComponents.ListItem {
-                checked: action !== "UFW BLOCK"
-
-                RowLayout {
-                    id: itemLayout
-                    width: root.width - 20
-                    spacing: 0
-                    PlasmaComponents.Label {
-                        Layout.leftMargin: 14
-                        text: "<i>" + model.time + "</i>"
-                    }
-
-                    PlasmaComponents.Label {
-                        Layout.leftMargin: 12
-                        text: i18n("from") + "<b> %1</b>".arg(sourceAddress)
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: Qt.openUrlExternally("https://www.geoiptool.com/?ip=%1".arg(sourceAddress));
-                            cursorShape: Qt.PointingHandCursor
-                        }
-                    }
-                    PlasmaComponents.Label {
-                        Layout.leftMargin: 0
-                        text: ":" + sourcePort
-                        visible: sourcePort
-                    }
-
-                    PlasmaComponents.Label {
-                        Layout.leftMargin: 6
-                        text: i18n("to <b>") + destinationAddress + "</b>"
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: Qt.openUrlExternally("https://www.geoiptool.com/?ip=%1".arg(destinationAddress));
-                            cursorShape: Qt.PointingHandCursor
-                        }
-                    }
-                    PlasmaComponents.Label {
-                        Layout.leftMargin: 0
-                        text: ":" + destinationPort
-                        visible: destinationPort
-                    }
-                    PlasmaComponents.Label {
-                        Layout.fillWidth: true
-                    }
-
-                    //                    PlasmaCore.IconItem {
-                    //                        source: action == "UFW BLOCK" ? "tab-close" : ""
-                    //                    }
-                    PlasmaComponents.Label {
-                        text: model.action
-                    }
-
-                    Text {
-                        Layout.preferredWidth: 40
-                        Layout.leftMargin: 6
-                        horizontalAlignment: Text.AlignHCenter
-                        text: protocol.toLowerCase()
-                        color: {
-                            if (protocol.startsWith("UDP"))
-                                return "brown"
-                            if (protocol.startsWith("TCP"))
-                                return "#006501"
-                            return "gray"
-                        }
-                    }
-                }
+            delegate: LogItemDelegate {
+                id: itemRoot
+                width: root.width - 10
             }
 
             section.property: "date"
             section.criteria: ViewSection.FullString
             section.delegate: sectionHeading
+
+            add: Transition {
+                NumberAnimation { property: "opacity"; from: 0; to: 1.0; duration: 400 }
+            }
         }
     }
 }

@@ -147,4 +147,36 @@ Item {
                                     })
     }
 
+    function createRuleFromLog( protocol, sourceAddress, sourcePort, destinationAddress, destinationPort, inn, out) {
+        // Transform to the ufw notation
+        sourceAddress = sourceAddress.replace("*","")
+        destinationAddress = destinationAddress.replace("*","")
+
+        sourceAddress = sourceAddress.replace("0.0.0.0","")
+        destinationAddress = destinationAddress.replace("0.0.0.0","")
+
+        var rule = Qt.createQmlObject("import org.nomad.ufw 1.0; Rule {}", mainWindow);
+
+        // Prepare rule draft
+        rule.incoming = (inn !== "")
+        rule.policy = "allow"
+        rule.sourceAddress = sourceAddress
+        rule.sourcePort = sourcePort
+
+        rule.destinationAddress = destinationAddress
+        rule.destinationPort = destinationPort
+
+        var protocols = ufwClient.getKnownProtocols()
+        rule.protocol = protocols.indexOf(protocol.toUpperCase())
+
+        ruleDetailsLoader.setSource("RuleEdit.qml", {
+                                        rule: rule,
+                                        newRule: true,
+                                        x: 0,
+                                        y: 0,
+                                        height: mainWindow.height,
+                                        width: mainWindow.width
+                                    })
+    }
+
 }
