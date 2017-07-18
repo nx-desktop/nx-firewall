@@ -11,7 +11,8 @@
 UfwClient::UfwClient(QObject *parent) :
     QObject(parent),
     m_isBusy(false),
-    m_rulesModel( new RuleListModel(this))
+    m_rulesModel(new RuleListModel(this)),
+    m_logs(new LogListModel(this))
 {
     // HACK: Quering the firewall status in this context
     // creates a segmentation fault error in some situations
@@ -177,8 +178,8 @@ void UfwClient::refreshLogs()
     action.setHelperId("org.nomad.ufw");
 
     QVariantMap args;
-    if (m_logs.size() > 0)
-        args["lastLine"] = m_logs.last();
+    if (m_rawLogs.size() > 0)
+        args["lastLine"] = m_rawLogs.last();
 
     action.setArguments(args);
 
@@ -190,8 +191,8 @@ void UfwClient::refreshLogs()
         if (!job->error())
         {
             QStringList newLogs = job->data().value("lines", "").toStringList();
-            m_logs.append(newLogs);
-            emit logsChanged(m_logs);
+            m_rawLogs.append(newLogs);
+            m_logs->addRawLogs(newLogs);
         } else
             qWarning() << job->errorString();
 
@@ -456,10 +457,11 @@ QString UfwClient::defaultOutgoingPolicy() const
     return UFW::Types::toString(policy_t);
 }
 
-QStringList UfwClient::logs()
+LogListModel *UfwClient::logs()
 {
     return m_logs;
 }
+
 
 bool UfwClient::logsAutoRefresh() const
 {

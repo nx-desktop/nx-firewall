@@ -9,6 +9,7 @@
 
 #include "profile.h"
 #include "rulelistmodel.h"
+#include "loglistmodel.h"
 
 class UfwClient : public QObject
 {
@@ -18,7 +19,6 @@ class UfwClient : public QObject
     Q_PROPERTY(QString status READ status NOTIFY statusChanged)
     Q_PROPERTY(QString defaultIncomingPolicy READ defaultIncomingPolicy WRITE setDefaultIncomingPolicy NOTIFY defaultIncomingPolicyChanged)
     Q_PROPERTY(QString defaultOutgoingPolicy READ defaultOutgoingPolicy WRITE setDefaultOutgoingPolicy NOTIFY defaultOutgoingPolicyChanged)
-    Q_PROPERTY(QStringList logs READ logs NOTIFY logsChanged)
     Q_PROPERTY(bool logsAutoRefresh READ logsAutoRefresh WRITE setLogsAutoRefresh NOTIFY logsAutoRefreshChanged)
 public:
     explicit UfwClient(QObject *parent = nullptr);
@@ -40,7 +40,7 @@ public:
     QString defaultIncomingPolicy() const;
     QString defaultOutgoingPolicy() const;
 
-    QStringList logs();
+    Q_INVOKABLE LogListModel* logs();
     bool logsAutoRefresh() const;
 
 signals:
@@ -51,7 +51,6 @@ signals:
     void defaultIncomingPolicyChanged(QString defaultIncomingPolicy);
     void defaultOutgoingPolicyChanged(QString defaultOutgoingPolicy);
 
-    void logsChanged(QStringList logs);
 
     void logsAutoRefreshChanged(bool logsAutoRefresh);
 
@@ -75,7 +74,8 @@ protected:
 
 private:
     QString m_status;
-    QStringList m_logs;
+    QStringList         m_rawLogs;
+    LogListModel*       m_logs;
     bool                m_isBusy;
     UFW::Profile        m_currentProfile;
     RuleListModel*      m_rulesModel;
