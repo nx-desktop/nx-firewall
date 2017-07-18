@@ -20,6 +20,7 @@ public:
         ProtocolRole,
         InterfaceRole,
         ActionRole,
+        TimeRole,
         DateRole,
     };
 

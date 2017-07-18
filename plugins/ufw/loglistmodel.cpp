@@ -39,14 +39,14 @@ QVariant LogListModel::data(const QModelIndex &index, int role) const
 
 void LogListModel::addRawLogs(QStringList rawLogsList)
 {
-    beginInsertRows(createIndex(0,0),m_logsData.size() - 1, m_logsData.size() + rawLogsList.size() - 1);
+    beginInsertRows(QModelIndex(), 0, rawLogsList.size() - 1);
     // UNSCAPED REGEX: (.*)\s(.*)\s(.*):\s\[(.*)\]\s\[(.*)\].*IN=([\w|\d]*).*SRC=([\w|\.|\d]*).*DST=([\w|\.|\d]*).*PROTO=([\w|\.|\d]*)\s(SPT=(\d*)\sDPT=(\d*))?.*
     static QRegularExpression regex("(.*)\\s(.*)\\s(.*):\\s\\[(.*)\\]\\s\\[(.*)\\].*IN=([\\w|\\d]*).*SRC=([\\w|\\.|\\d]*).*DST=([\\w|\\.|\\d]*).*PROTO=([\\w|\\.|\\d]*)\\s(SPT=(\\d*)\\sDPT=(\\d*))?.*");
     for (QString log : rawLogsList) {
 
         auto match = regex.match(log);
         if (match.hasMatch()) {
-            QDateTime date = QDateTime::fromString(match.captured(1));
+            QDateTime date = QDateTime::fromString(match.captured(1), "MMM d HH:mm:ss");
             QString host = match.captured(2);
             QString id = match.captured(4);
             QString action = match.captured(5);
@@ -71,9 +71,9 @@ void LogListModel::addRawLogs(QStringList rawLogsList)
             logDetails << sourceAddress << sourcePort;
             logDetails << destinationAddress << destinationPort;
             logDetails << protocol << interface;
-            logDetails << action << date;
+            logDetails << action << date.toString("HH:mm:ss") << date.toString("MMM dd");
 
-            m_logsData.append((QVariant) logDetails);
+            m_logsData.push_front((QVariant) logDetails);
         }
     }
     endInsertRows();
@@ -90,6 +90,7 @@ QHash<int, QByteArray> LogListModel::roleNames() const
     roles[ProtocolRole] = "protocol";
     roles[InterfaceRole] = "interface";
     roles[ActionRole] = "action";
+    roles[TimeRole] = "time";
     roles[DateRole] = "date";
 
     return roles;
