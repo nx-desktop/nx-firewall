@@ -34,7 +34,7 @@ ColumnLayout {
         Layout.topMargin: 12
         PlasmaExtras.Heading {
             level: 4
-            text: i18n("Default Inconmig Policy:")
+            text: i18n("Default Incoming Policy:")
         }
 
         PlasmaComponents.ButtonRow {
