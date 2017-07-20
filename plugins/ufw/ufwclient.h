@@ -75,10 +75,10 @@ protected:
 private:
     QString m_status;
     QStringList         m_rawLogs;
-    LogListModel*       m_logs;
     bool                m_isBusy;
     UFW::Profile        m_currentProfile;
     RuleListModel*      m_rulesModel;
+    LogListModel*       m_logs;
     QTimer              m_logsRefreshTimer;
     //    UFW::Blocker       *blocker;
     bool m_logsAutoRefresh;

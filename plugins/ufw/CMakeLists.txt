@@ -13,6 +13,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     Declarative
     Auth
     Config
+    KDELibs4Support
 )
 
 
@@ -40,7 +41,8 @@ target_link_libraries(nomad_ufw_plugin
                       KF5::CoreAddons
                       KF5::ConfigCore
                       KF5::Auth
-                      KF5::I18n)
+                      KF5::I18n
+                      KF5::KDELibs4Support)
 
 set(INSTALL_PATH ${QML_INSTALL_DIR}/org/nomad/ufw)
 

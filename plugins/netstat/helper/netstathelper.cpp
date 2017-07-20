@@ -11,7 +11,7 @@ NetstatHelper::NetstatHelper()
 
 }
 
-KAuth::ActionReply NetstatHelper::query(const QVariantMap &args)
+KAuth::ActionReply NetstatHelper::query(const QVariantMap)
 {
     KAuth::ActionReply reply;
 

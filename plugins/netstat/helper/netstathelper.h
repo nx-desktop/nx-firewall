@@ -12,7 +12,7 @@ public:
     NetstatHelper();
 
 public Q_SLOTS:
-    ActionReply query(const QVariantMap &args);
+    ActionReply query(const QVariantMap);
 
 private:
     QVariantList parseOutput(const QByteArray &netstatOutput);

@@ -34,16 +34,6 @@ Item {
         id: tabs
         anchors.fill: parent
         Tab {
-            title: i18n("Connections")
-
-            ConnectionsView {
-                Component.onCompleted: {
-                    filterConnection.connect(mainWindow.createRuleFromConnection)
-                }
-            }
-        }
-
-        Tab {
             title: i18n("Rules")
 
             Item {
@@ -75,6 +65,16 @@ Item {
                     imagePath: "opaque/widgets/panel-background"
                 }
 
+            }
+        }
+        
+        Tab {
+            title: i18n("Connections")
+
+            ConnectionsView {
+                Component.onCompleted: {
+                    filterConnection.connect(mainWindow.createRuleFromConnection)
+                }
             }
         }
 

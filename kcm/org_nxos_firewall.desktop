@@ -6,7 +6,7 @@ Type=Service
 X-KDE-ServiceTypes=KCModule
 X-KDE-Library=org.nxos.firewall
 X-KDE-ParentApp=kcontrol
-X-KDE-System-Settings-Parent-Category=networksettings
+X-KDE-System-Settings-Parent-Category=network
 X-KDE-Weight=80
 X-DocPath=kcontrol5/org.nxos.firewall/index.html
 
