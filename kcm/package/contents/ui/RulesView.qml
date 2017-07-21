@@ -7,11 +7,29 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 
 import org.nomad.ufw 1.0 as UFW
+
 FocusScope {
     id: rulesViewRoot
     property alias model: listView.model
 
     clip: true
+
+    Component {
+        id: sectionHeading
+        PlasmaComponents.ListItem {
+            sectionDelegate: true
+            Item {
+                height: 32
+                width: 200
+                PlasmaExtras.Heading {
+                    anchors.fill: parent
+                    anchors.leftMargin: 12
+                    level: 4
+                    text: section == "true" ? "IPv6" : "IPv4"
+                }
+            }
+        }
+    }
 
     PlasmaExtras.ScrollArea {
         id: listScrollArea
@@ -21,6 +39,8 @@ FocusScope {
             id: listView
             bottomMargin: 48 * 2
             delegate: RuleListItem {
+                isLast: index == listView.model.rowCount() - 1
+                width: listView.width
                 onMove: function (from, to) {
                     // Force valid positions
                     to = Math.max(0, to)
@@ -28,9 +48,7 @@ FocusScope {
 
                     // Hack to force the list to be redraw and the item return to
                     // its original position
-                    if (from === to)
-                        listView.model.modelReset()
-                    else {
+                    if (from !== to) {
                         listView.model.move(from, to)
                         ufwClient.moveRule(from, to)
                     }
@@ -48,10 +66,14 @@ FocusScope {
                                                 })
                 }
 
-                onRemove: function( index ) {
-                    ufwClient.removeRule(index);
+                onRemove: function (index) {
+                    ufwClient.removeRule(index)
                 }
             }
+
+            section.property: "ipv6"
+            section.criteria: ViewSection.FullString
+            section.delegate: sectionHeading
         }
     }
 

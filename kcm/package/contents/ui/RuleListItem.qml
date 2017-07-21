@@ -5,120 +5,202 @@ import QtQuick.Controls 1.4
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
-MouseArea {
+Item {
     id: itemRoot
-    height: 48
-    anchors.left: parent.left
-    anchors.right: parent.right
 
-    hoverEnabled: true
+    height: dragableItem.height
 
+    property bool isLast: false
     signal move(int from, int to)
     signal edit(int index)
     signal remove(int index)
 
-    z: dragArea.pressed ? 100 : 0
-
-    Rectangle {
-        id: background
+    MouseArea {
+        id: itemRootMouseArea
         anchors.fill: parent
-        opacity: 0
-        color: theme.highlightColor
+        hoverEnabled: true
 
-        visible: itemRoot.containsMouse
+        acceptedButtons: Qt.LeftButton
+        onClicked: edit(index)
+
+        onEntered: eraseButton.visible = true
+        onExited: eraseButton.visible = false
+        propagateComposedEvents: true
+
+        Rectangle {
+            anchors.fill: parent
+            color: parent.containsMouse ? "green" : "blue"
+            opacity: 0.5
+        }
     }
 
-    RowLayout {
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
+    DropArea {
+        id: upperDropArea
+        height: 9
         anchors.left: parent.left
+        anchors.right: parent.right
+        y: 0
 
-        MouseArea {
-            id: dragArea
+        onEntered: drag.source.dropIndex = index
+        onExited: drag.source.dropIndex = -1
+        Rectangle {
+            anchors.fill: parent
+            color: parent.containsDrag ? theme.highlightColor : "transparent"
+        }
 
-            Layout.fillHeight: true
-            Layout.leftMargin: 12
-            Layout.minimumWidth: 18
-            Layout.minimumHeight: 18
-
-            drag.target: itemRoot
-            PlasmaCore.IconItem {
-                anchors.fill: parent
-
-                source: "show-grid"
+        states: [
+            State {
+                name: "hovered"
+                when: upperDropArea.containsDrag
+                PropertyChanges {
+                    target: upperDropArea
+                    height: 18
+                    y: -9
+                }
             }
+        ]
 
-            drag.onActiveChanged: {
-                if (!dragArea.drag.active) {
-                    var newIndex = (itemRoot.y + (itemRoot.height / 2)) / itemRoot.height
-                    move(index, newIndex)
+        transitions: Transition {
+            NumberAnimation {
+                properties: "height,y"
+                easing.type: Easing.InOutQuad
+                duration: 200
+            }
+        }
+    }
+
+    PlasmaComponents.ListItem {
+        id: dragableItem
+        height: 48
+        property int dropIndex: -1
+        property int base_x: 0
+        property int base_y: 0
+
+        Component.onCompleted: {
+            dragableItem.base_x = dragableItem.x
+            dragableItem.base_y = dragableItem.y
+        }
+
+        checked: dragArea.drag.active
+
+        z: dragArea.drag.active ? 100 : 0
+        Drag.active: dragArea.drag.active
+        Drag.hotSpot.x: dragArea.width / 2
+        Drag.hotSpot.y: dragArea.height / 2
+
+        RowLayout {
+            anchors.fill: parent
+
+            Item {
+                Layout.leftMargin: 4
+                height: 32
+                width: 32
+
+                PlasmaCore.IconItem {
+                    anchors.centerIn: parent
+                    height: 18
+                    width: height
+                    source: "application-menu"
+                    visible: itemRootMouseArea.containsMouse
+                }
+
+                MouseArea {
+                    id: dragArea
+                    anchors.fill: parent
+                    drag.target: dragableItem
+                    cursorShape: dragArea.pressed ? Qt.DragMoveCursor : Qt.OpenHandCursor
+                    onReleased: {
+                        print(dragableItem.dropIndex, index)
+                        if (dragableItem.dropIndex == -1
+                                || index + 1 == dragableItem.dropIndex
+                                || index == dragableItem.dropIndex) {
+                            dragableItem.x = dragableItem.base_x
+                            dragableItem.y = dragableItem.base_y
+                        } else
+                            move(index, dragableItem.dropIndex)
+                    }
                 }
             }
 
-            cursorShape: dragArea.pressed ? Qt.DragMoveCursor : Qt.OpenHandCursor
-        }
+            PlasmaComponents.Label {
+                Layout.minimumWidth: 120
+                Layout.fillHeight: true
+                Layout.leftMargin: 4
+                text: model.action
+            }
+            PlasmaComponents.Label {
+                Layout.minimumWidth: 160
+                text: model.from
+            }
+            PlasmaComponents.Label {
+                Layout.minimumWidth: 160
+                text: model.to
+            }
+            //        PlasmaComponents.Label {
+            //            Layout.minimumWidth: 60
+            //            text: model.ipv6 ? "IPv6" : ""
+            //        }
+            PlasmaComponents.Label {
+                Layout.leftMargin: 12
+                text: model.logging
+            }
 
-        PlasmaComponents.Label {
-            Layout.minimumWidth: 120
-            Layout.fillHeight: true
-            Layout.leftMargin: 4
-            text: model.action
-        }
-        PlasmaComponents.Label {
-            Layout.minimumWidth: 160
-            text: model.from
-        }
-        PlasmaComponents.Label {
-            Layout.minimumWidth: 160
-            text: model.to
-        }
-        PlasmaComponents.Label {
-            Layout.minimumWidth: 60
-            text: model.ipv6 ? "IPv6" : ""
-        }
-        PlasmaComponents.Label {
-            Layout.leftMargin: 12
-            text: model.logging
+            Item {
+                Layout.fillWidth: true
+                height: 32
+                width: 32
+
+                PlasmaComponents.ToolButton {
+                    id: eraseButton
+                    height: 32
+                    width: 32
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 32
+                                        visible: false
+                    onHoveredChanged: visible = hovered
+
+                    iconSource: "user-trash"
+                    onClicked: itemRoot.remove(index)
+                }
+            }
         }
     }
 
-    PlasmaComponents.ToolButton {
+    DropArea {
+        id: lowerDropArea
+        visible: isLast
+        height: 9
+
+        anchors.left: parent.left
         anchors.right: parent.right
-        anchors.rightMargin: 24
-        anchors.verticalCenter: parent.verticalCenter
-        visible: itemRoot.containsMouse
+        y: height
 
-        height: 48
-        iconSource: "entry-delete"
-        onClicked: itemRoot.remove(index)
+        onEntered: drag.source.dropIndex = index + 1
+        onExited: drag.source.dropIndex = -1
+        Rectangle {
+            anchors.fill: parent
+            color: parent.containsDrag ? theme.highlightColor : "transparent"
+        }
+
+        states: [
+            State {
+                name: "hovered"
+                when: lowerDropArea.containsDrag
+                PropertyChanges {
+                    target: lowerDropArea
+                    height: 18
+                    y: height + 9
+                }
+            }
+        ]
+
+        transitions: Transition {
+            NumberAnimation {
+                properties: "height"
+                easing.type: Easing.InOutQuad
+                duration: 200
+            }
+        }
     }
-
-    states: [
-        State {
-            name: "grabed"
-            when: dragArea.pressed
-            PropertyChanges {
-                target: background
-                opacity: 1
-            }
-        }
-    ]
-    transitions: [
-        Transition {
-            to: "grabed"
-            NumberAnimation {
-                properties: "opacity"
-                easing.type: Easing.InOutQuad
-            }
-        },
-        Transition {
-            from: "grabed"
-            NumberAnimation {
-                properties: "opacity"
-                easing.type: Easing.InOutQuad
-            }
-        }
-    ]
-
-    onClicked: edit(index)
 }
