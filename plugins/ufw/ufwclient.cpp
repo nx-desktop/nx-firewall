@@ -92,10 +92,12 @@ void UfwClient::queryStatus(bool readDefaults, bool listProfiles)
         {
             QByteArray response = job->data().value("response", "").toByteArray();
             setProfile(UFW::Profile(response));
-        } else
+            setStatus("");
+        } else {
+            setStatus("There was an error in the backend! Please report it.");
             qWarning() << job->errorString();
+        }
 
-        setStatus("");
         setBusy(false);
     });
 
