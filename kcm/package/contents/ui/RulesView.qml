@@ -39,9 +39,10 @@ FocusScope {
             id: listView
             bottomMargin: 48 * 2
             delegate: RuleListItem {
-                isLast: index == listView.model.rowCount() - 1
+                dropAreasVisible: true
                 width: listView.width
                 onMove: function (from, to) {
+//                    print("moving ", from, " to ", to)
                     // Force valid positions
                     to = Math.max(0, to)
                     to = Math.min(listView.model.rowCount() - 1, to)

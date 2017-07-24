@@ -8,61 +8,59 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 Item {
     id: itemRoot
 
-    height: dragableItem.height
+    property bool dropAreasVisible: false
 
-    property bool isLast: false
     signal move(int from, int to)
     signal edit(int index)
     signal remove(int index)
 
-    MouseArea {
-        id: itemRootMouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-
-        acceptedButtons: Qt.LeftButton
-        onClicked: edit(index)
-
-        onEntered: eraseButton.visible = true
-        onExited: eraseButton.visible = false
-        propagateComposedEvents: true
-
-        Rectangle {
-            anchors.fill: parent
-            color: parent.containsMouse ? "green" : "blue"
-            opacity: 0.5
-        }
-    }
+    height: upperSpacer.height + dragableItem.height + lowerSpacer.height
 
     DropArea {
         id: upperDropArea
-        height: 9
-        anchors.left: parent.left
-        anchors.right: parent.right
-        y: 0
+        anchors {
+            top: parent.top
+            bottom: dragableItem.verticalCenter
+            left: parent.left
+            right: parent.right
+        }
+
+        visible: dropAreasVisible && !dragArea.drag.active
+        enabled: !dragArea.drag.active && index == 0
 
         onEntered: drag.source.dropIndex = index
         onExited: drag.source.dropIndex = -1
-        Rectangle {
-            anchors.fill: parent
-            color: parent.containsDrag ? theme.highlightColor : "transparent"
+    }
+
+    PlasmaCore.FrameSvgItem {
+        id: upperSpacer
+        anchors.left: parent.left
+        anchors.right: parent.right
+        imagePath: "translucent/widgets/panel-background"
+
+        height: 0
+        visible: false
+
+        PlasmaComponents.Label {
+            text: i18n("Drop rule")
+            anchors.centerIn: parent
         }
 
         states: [
             State {
-                name: "hovered"
+                name: "expanded"
                 when: upperDropArea.containsDrag
                 PropertyChanges {
-                    target: upperDropArea
-                    height: 18
-                    y: -9
+                    target: upperSpacer
+                    height: 48
+                    visible: true
                 }
             }
         ]
 
         transitions: Transition {
             NumberAnimation {
-                properties: "height,y"
+                properties: "height"
                 easing.type: Easing.InOutQuad
                 duration: 200
             }
@@ -71,7 +69,12 @@ Item {
 
     PlasmaComponents.ListItem {
         id: dragableItem
+        y: upperSpacer.height
+
+        anchors.left: parent.left
+        anchors.right: parent.right
         height: 48
+
         property int dropIndex: -1
         property int base_x: 0
         property int base_y: 0
@@ -81,12 +84,26 @@ Item {
             dragableItem.base_y = dragableItem.y
         }
 
+        MouseArea {
+            id: itemRootMouseArea
+            anchors.fill: parent
+            hoverEnabled: true
+
+            acceptedButtons: Qt.LeftButton
+            onClicked: edit(index)
+
+            onEntered: eraseButton.visible = true
+            onExited: eraseButton.visible = false
+            propagateComposedEvents: true
+        }
+
         checked: dragArea.drag.active
 
-        z: dragArea.drag.active ? 100 : 0
         Drag.active: dragArea.drag.active
         Drag.hotSpot.x: dragArea.width / 2
         Drag.hotSpot.y: dragArea.height / 2
+
+        z: Drag.active ? 100 : 0
 
         RowLayout {
             anchors.fill: parent
@@ -110,13 +127,12 @@ Item {
                     drag.target: dragableItem
                     cursorShape: dragArea.pressed ? Qt.DragMoveCursor : Qt.OpenHandCursor
                     onReleased: {
-                        print(dragableItem.dropIndex, index)
-                        if (dragableItem.dropIndex == -1
-                                || index + 1 == dragableItem.dropIndex
-                                || index == dragableItem.dropIndex) {
-                            dragableItem.x = dragableItem.base_x
-                            dragableItem.y = dragableItem.base_y
-                        } else
+                        // allways return the item to it's original position
+                        dragableItem.x = dragableItem.base_x
+                        dragableItem.y = Qt.binding(function () {return upperSpacer.height})
+
+                        if (dragableItem.dropIndex != index
+                                && dragableItem.dropIndex - 1 != index)
                             move(index, dragableItem.dropIndex)
                     }
                 }
@@ -146,18 +162,18 @@ Item {
             }
 
             Item {
-                Layout.fillWidth: true
+                //                Layout.fillWidth: true
                 height: 32
                 width: 32
 
                 PlasmaComponents.ToolButton {
                     id: eraseButton
-                    height: 32
-                    width: 32
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 32
-                                        visible: false
+                    minimumHeight: 32
+                    minimumWidth: 32
+                    //                    anchors.verticalCenter: parent.verticalCenter
+                    //                    anchors.left: parent.left
+                    //                    anchors.leftMargin: 32
+                    visible: false
                     onHoveredChanged: visible = hovered
 
                     iconSource: "user-trash"
@@ -167,30 +183,47 @@ Item {
         }
     }
 
+
+
     DropArea {
         id: lowerDropArea
-        visible: isLast
-        height: 9
+        anchors {
+            top: dragableItem.verticalCenter
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
 
-        anchors.left: parent.left
-        anchors.right: parent.right
-        y: height
+        visible: dropAreasVisible && !dragArea.drag.active
+        enabled: !dragArea.drag.active
 
         onEntered: drag.source.dropIndex = index + 1
         onExited: drag.source.dropIndex = -1
-        Rectangle {
-            anchors.fill: parent
-            color: parent.containsDrag ? theme.highlightColor : "transparent"
+    }
+
+    PlasmaCore.FrameSvgItem {
+        id: lowerSpacer
+        anchors.left: parent.left
+        anchors.right: parent.right
+        imagePath: "translucent/widgets/panel-background"
+
+        y: dragableItem.height
+        height: 0
+        visible: false
+
+        PlasmaComponents.Label {
+            text: i18n("Drop rule")
+            anchors.centerIn: parent
         }
 
         states: [
             State {
-                name: "hovered"
+                name: "expanded"
                 when: lowerDropArea.containsDrag
                 PropertyChanges {
-                    target: lowerDropArea
-                    height: 18
-                    y: height + 9
+                    target: lowerSpacer
+                    height: 48
+                    visible: true
                 }
             }
         ]
