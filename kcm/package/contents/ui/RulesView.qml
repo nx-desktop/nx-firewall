@@ -42,7 +42,7 @@ FocusScope {
                 dropAreasVisible: true
                 width: listView.width
                 onMove: function (from, to) {
-                    print("moving ", from, " to ", to)
+//                    print("moving ", from, " to ", to)
                     if (from < to)
                         to = to - 1
 
