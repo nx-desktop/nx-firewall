@@ -42,15 +42,16 @@ FocusScope {
                 dropAreasVisible: true
                 width: listView.width
                 onMove: function (from, to) {
-//                    print("moving ", from, " to ", to)
+                    print("moving ", from, " to ", to)
+                    if (from < to)
+                        to = to - 1
+
                     // Force valid positions
                     to = Math.max(0, to)
-                    to = Math.min(listView.model.rowCount() - 1, to)
+                    to = Math.min(listView.model.rowCount(), to)
 
-                    // Hack to force the list to be redraw and the item return to
-                    // its original position
                     if (from !== to) {
-                        listView.model.move(from, to)
+//                        listView.model.move(from, to)
                         ufwClient.moveRule(from, to)
                     }
                 }

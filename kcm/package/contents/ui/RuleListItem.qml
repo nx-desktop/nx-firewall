@@ -29,7 +29,7 @@ Item {
         enabled: !dragArea.drag.active && index == 0
 
         onEntered: drag.source.dropIndex = index
-        onExited: drag.source.dropIndex = -1
+        onExited: drag.source.dropIndex = 0
     }
 
     PlasmaCore.FrameSvgItem {
@@ -52,7 +52,7 @@ Item {
                 when: upperDropArea.containsDrag
                 PropertyChanges {
                     target: upperSpacer
-                    height: 48
+                    height: dragableItem.height
                     visible: true
                 }
             }
@@ -73,7 +73,7 @@ Item {
 
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 48
+        height: 42
 
         property int dropIndex: -1
         property int base_x: 0
@@ -131,8 +131,8 @@ Item {
                         dragableItem.x = dragableItem.base_x
                         dragableItem.y = Qt.binding(function () {return upperSpacer.height})
 
-                        if (dragableItem.dropIndex != index
-                                && dragableItem.dropIndex - 1 != index)
+//                        if (dragableItem.dropIndex != index
+//                                && dragableItem.dropIndex - 1 != index)
                             move(index, dragableItem.dropIndex)
                     }
                 }
@@ -170,9 +170,7 @@ Item {
                     id: eraseButton
                     minimumHeight: 32
                     minimumWidth: 32
-                    //                    anchors.verticalCenter: parent.verticalCenter
-                    //                    anchors.left: parent.left
-                    //                    anchors.leftMargin: 32
+
                     visible: false
                     onHoveredChanged: visible = hovered
 
@@ -212,7 +210,7 @@ Item {
         visible: false
 
         PlasmaComponents.Label {
-            text: i18n("Drop rule")
+            text: i18n("Drop rule ")
             anchors.centerIn: parent
         }
 
@@ -222,7 +220,7 @@ Item {
                 when: lowerDropArea.containsDrag
                 PropertyChanges {
                     target: lowerSpacer
-                    height: 48
+                    height: dragableItem.height
                     visible: true
                 }
             }
