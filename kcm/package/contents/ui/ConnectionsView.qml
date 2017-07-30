@@ -7,7 +7,7 @@ import org.kde.plasma.extras 2.0 as PlasmaExtras
 
 Item {
     id: connectionsViewRoot
-    signal filterConnection(var protocol, var localAddress, var foreignAddres, var status)
+
 
     PlasmaExtras.ScrollArea {
         anchors.fill: parent
@@ -16,9 +16,8 @@ Item {
             anchors.fill: parent
             model: netStatClient.connections()
             delegate: ConnectionItemDelegate {
-                Component.onCompleted: {
-                    filterConnection.connect(connectionsViewRoot.filterConnection)
-                }
+                onFilterConnection: mainWindow.createRuleFromConnection(protocol, localAddress, foreignAddres, status)
+
             }
 
             headerPositioning: ListView.OverlayHeader

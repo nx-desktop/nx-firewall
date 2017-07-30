@@ -31,7 +31,6 @@ Popup {
         else
             ufwClient.updateRule(rule)
 
-        tabs.currentIndex = 0
         close()
     }
     Component.onCompleted: open()

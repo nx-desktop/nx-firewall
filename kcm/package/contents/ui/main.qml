@@ -1,6 +1,7 @@
 import QtQuick 2.6
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
@@ -30,64 +31,55 @@ Item {
         anchors.fill: parent
     }
 
-    TabView {
-        id: tabs
-        anchors.fill: parent
-        Tab {
-            title: i18n("Rules")
+//    PlasmaCore.FrameSvgItem {
+//       anchors.fill: parent
+//       imagePath: "dialogs/background"
+//       enabledBorders: PlasmaCore.FrameSvg.NoBorder
+//    }
 
-            Item {
-                GlobalRules {
-                    id: globalControls
+    PlasmaComponents.TabBar {
+        id: tabButtons
+        anchors.top: parent.top
+        anchors.left: parent.left
 
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-
-                    anchors.margins: 12
-                    anchors.leftMargin: 18
-                }
-
-                PlasmaCore.FrameSvgItem {
-                    anchors.top: globalControls.bottom
-                    anchors.topMargin: 18
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-
-                    anchors.margins: 12
-
-                    RulesView {
-                        anchors.fill: parent
-                        model: ufwClient.rules()
-                    }
-
-                    imagePath: "opaque/widgets/panel-background"
-                }
-
-            }
+        PlasmaComponents.TabButton {
+            text: i18n("Rules")
+            tab: rulesTab
         }
-        
-        Tab {
-            title: i18n("Connections")
-
-            ConnectionsView {
-                Component.onCompleted: {
-                    filterConnection.connect(mainWindow.createRuleFromConnection)
-                }
-            }
+        PlasmaComponents.TabButton {
+            text: i18n("Connections")
+            tab: connectionsTab
         }
-
-        Tab {
-            title: i18n("Logs")
-
-            LogsView {
-            }
-
-            onActiveChanged: ufwClient.logsAutoRefresh = active
+        PlasmaComponents.TabButton {
+            text: i18n("Logs")
+            tab: logsTab
         }
     }
 
+    PlasmaComponents.TabGroup {
+        id: tabGroup
+        anchors.top: tabButtons.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 12
+
+        PlasmaExtras.ConditionalLoader {
+            id: rulesTab
+            when: tabGroup.currentTab == rulesTab
+            source: Qt.createComponent("RulesView.qml")
+        }
+        PlasmaExtras.ConditionalLoader {
+            id: connectionsTab
+            when: tabGroup.currentTab == connectionsTab
+            source: Qt.createComponent("ConnectionsView.qml")
+        }
+        PlasmaExtras.ConditionalLoader {
+            id: logsTab
+            when: tabGroup.currentTab == logsTab
+            source: Qt.createComponent("LogsView.qml")
+        }
+    }
 
     PlasmaComponents.Label {
         anchors.bottom: parent.bottom
@@ -97,18 +89,19 @@ Item {
         text: ufwClient.status
     }
 
-    function createRuleFromConnection( protocol, localAddress, foreignAddres, status) {
+    function createRuleFromConnection(protocol, localAddress, foreignAddres, status) {
         // Transform to the ufw notation
-        localAddress = localAddress.replace("*","")
-        foreignAddres = foreignAddres.replace("*","")
+        localAddress = localAddress.replace("*", "")
+        foreignAddres = foreignAddres.replace("*", "")
 
-        localAddress = localAddress.replace("0.0.0.0","")
-        foreignAddres = foreignAddres.replace("0.0.0.0","")
+        localAddress = localAddress.replace("0.0.0.0", "")
+        foreignAddres = foreignAddres.replace("0.0.0.0", "")
 
-        var localAddressData = localAddress.split(":");
-        var foreignAddresData = foreignAddres.split(":");
+        var localAddressData = localAddress.split(":")
+        var foreignAddresData = foreignAddres.split(":")
 
-        var rule = Qt.createQmlObject("import org.nomad.ufw 1.0; Rule {}", mainWindow);
+        var rule = Qt.createQmlObject("import org.nomad.ufw 1.0; Rule {}",
+                                      mainWindow)
 
         // Prepare rule draft
         if (status === "LISTEN") {
@@ -133,7 +126,6 @@ Item {
             rule.destinationPort = foreignAddresData[1]
         }
 
-
         var protocols = ufwClient.getKnownProtocols()
         rule.protocol = protocols.indexOf(protocol.toUpperCase())
 
@@ -147,15 +139,16 @@ Item {
                                     })
     }
 
-    function createRuleFromLog( protocol, sourceAddress, sourcePort, destinationAddress, destinationPort, inn, out) {
+    function createRuleFromLog(protocol, sourceAddress, sourcePort, destinationAddress, destinationPort, inn, out) {
         // Transform to the ufw notation
-        sourceAddress = sourceAddress.replace("*","")
-        destinationAddress = destinationAddress.replace("*","")
+        sourceAddress = sourceAddress.replace("*", "")
+        destinationAddress = destinationAddress.replace("*", "")
 
-        sourceAddress = sourceAddress.replace("0.0.0.0","")
-        destinationAddress = destinationAddress.replace("0.0.0.0","")
+        sourceAddress = sourceAddress.replace("0.0.0.0", "")
+        destinationAddress = destinationAddress.replace("0.0.0.0", "")
 
-        var rule = Qt.createQmlObject("import org.nomad.ufw 1.0; Rule {}", mainWindow);
+        var rule = Qt.createQmlObject("import org.nomad.ufw 1.0; Rule {}",
+                                      mainWindow)
 
         // Prepare rule draft
         rule.incoming = (inn !== "")
@@ -178,5 +171,4 @@ Item {
                                         width: mainWindow.width
                                     })
     }
-
 }
