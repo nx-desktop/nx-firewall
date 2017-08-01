@@ -31,11 +31,11 @@ Item {
         anchors.fill: parent
     }
 
-//    PlasmaCore.FrameSvgItem {
-//       anchors.fill: parent
-//       imagePath: "dialogs/background"
-//       enabledBorders: PlasmaCore.FrameSvg.NoBorder
-//    }
+    PlasmaCore.FrameSvgItem {
+       anchors.fill: parent
+       imagePath: "dialogs/background"
+       enabledBorders: PlasmaCore.FrameSvg.NoBorder
+    }
 
     PlasmaComponents.TabBar {
         id: tabButtons
@@ -51,6 +51,7 @@ Item {
             tab: connectionsTab
         }
         PlasmaComponents.TabButton {
+            id: logsTabButton
             text: i18n("Logs")
             tab: logsTab
         }
