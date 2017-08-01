@@ -20,6 +20,7 @@ Item {
 
     UfwClient {
         id: ufwClient
+        logsAutoRefresh: tabButtons.currentTab == logsTabButton
     }
 
     NetstatClient {
