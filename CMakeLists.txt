@@ -10,6 +10,9 @@ set(QT_MIN_VERSION "5.7.0")
 #-----------------------------------------------------------------------------
 #                              DEPENDENCIES
 #-----------------------------------------------------------------------------
+# Python3 (search for this first so that we will not get Python2 by accident)
+find_package(PythonInterp 3 REQUIRED)
+
 # Qt5
 find_package(Qt5 REQUIRED COMPONENTS
     Core
