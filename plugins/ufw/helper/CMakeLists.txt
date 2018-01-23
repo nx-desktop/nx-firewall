@@ -22,6 +22,11 @@ add_executable(nomad_ufw_plugin_helper ${ufw_plugin_helper_SRCS})
 
 # set_target_properties(kcm_ufw_helper PROPERTIES OUTPUT_NAME kcm_ufw_helper)
 target_link_libraries(nomad_ufw_plugin_helper Qt5::Core KF5::Auth)
+if (IS_ABSOLUTE "${LIBEXEC_INSTALL_DIR}")
+  set(UFW_PLUGIN_HELPER_PATH ${LIBEXEC_INSTALL_DIR}/nomad_ufw_plugin_helper.py)
+else()
+  set(UFW_PLUGIN_HELPER_PATH ${CMAKE_INSTALL_PREFIX}/${LIBEXEC_INSTALL_DIR}/nomad_ufw_plugin_helper.py)
+endif()
 configure_file(kcm_ufw_helper.py.cmake ${CMAKE_BINARY_DIR}/nomad_ufw_plugin_helper.py)
 configure_file(ufw_helper_config.h.cmake ${CMAKE_BINARY_DIR}/ufw_helper_config.h)
 
