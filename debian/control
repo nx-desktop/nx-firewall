@@ -1,0 +1,17 @@
+Source: nomad-firewall
+Section: unknown
+Priority: optional
+Maintainer: Alexis López Zubieta <azubieta90@gmail.com>
+Build-Depends: debhelper (>=9), cmake, extra-cmake-modules, libkf5i18n-dev, plasma-framework-dev, libkf5declarative-dev, qtdeclarative5-dev, qtbase5-dev, kdelibs5-dev, libqt5x11extras5-dev, libkf5archive-dev, libkf5newstuff-dev, libkf5auth-dev, libkf5config-dev, kio-dev, libkf5configwidgets-dev, libkf5kcmutils-dev, libkf5kdelibs4support-dev, netstat-nat
+Standards-Version: 3.9.6
+#Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: git://anonscm.debian.org/collab-maint/nomad-firewall.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/nomad-firewall.git
+
+Package: nomad-firewall
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python, ufw, netstat-nat
+Description: Nomad Firewall - Protect your workstation!
+ Nomad Firewall allows you to protect your workstation from
+ network atacks and also to avoid your data to be exposed 
+ on the network by an imprudent application.
