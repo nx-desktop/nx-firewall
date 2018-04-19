@@ -1,3 +1,4 @@
+#!/bin/bash
 apt-get --yes update
 apt-get --yes install wget
 
