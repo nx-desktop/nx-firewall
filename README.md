@@ -1,4 +1,4 @@
-# Nomad Firewall
+# Nomad Firewall [![Build Status](https://travis-ci.org/nomad-desktop/nomad-firewall.svg?branch=master)](https://travis-ci.org/nomad-desktop/nomad-firewall)
 
 This is the repository for the Nomad Firewall KCM.
 
