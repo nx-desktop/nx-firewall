@@ -11,7 +11,7 @@ X-KDE-Weight=80
 X-DocPath=kcontrol5/org.nxos.firewall/index.html
 
 
-Name=Nomad Firewall
-Comment=Nomad Firewall - Secure your workstation!
+Name=Nx Firewall
+Comment=Nx Firewall - Secure your workstation!
 X-KDE-Keywords=firewall, network, security
 Categories=Qt;KDE;X-KDE-settings-looknfeel;

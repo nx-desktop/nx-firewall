@@ -1,4 +1,4 @@
-# Firewall KCM [![Build Status](https://travis-ci.org/nomad-desktop/nomad-firewall.svg?branch=master)](https://travis-ci.org/nomad-desktop/nomad-firewall)
+# Firewall KCM [![Build Status](https://travis-ci.org/nx-desktop/nx-firewall.svg?branch=master)](https://travis-ci.org/nx-desktop/nx-firewall)
 
 This is the repository for the Plasma 5 Firewall KCM.
 

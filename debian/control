@@ -1,4 +1,4 @@
-Source: nomad-firewall
+Source: nx-firewall
 Section: unknown
 Priority: optional
 Maintainer: Alexis López Zubieta <azubieta90@gmail.com>
@@ -8,10 +8,10 @@ Standards-Version: 3.9.6
 #Vcs-Git: git://anonscm.debian.org/collab-maint/nomad-firewall.git
 #Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/nomad-firewall.git
 
-Package: nomad-firewall
+Package: nx-firewall
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, python, ufw, netstat-nat
-Description: Nomad Firewall - Protect your workstation!
- Nomad Firewall allows you to protect your workstation from
+Description: Nx Firewall - Protect your workstation!
+ Nx Firewall allows you to protect your workstation from
  network atacks and also to avoid your data to be exposed 
  on the network by an imprudent application.
