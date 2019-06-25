@@ -1,3 +1,9 @@
+nx-firewall (0.4.1) nxos; urgency=medium
+
+  * Update name.
+
+ -- Uri Herrera <uri_herrera@nxos.org>  Tue, 25 Jun 2019 18:03:00 -0500
+
 nx-firewall (0.4-6) nxos; urgency=medium
 
   * Adding netstat to the build depends 
