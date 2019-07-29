@@ -2,8 +2,6 @@
 
 This is the repository for the Plasma 5 Firewall KCM.
 
-![](https://i.imgur.com/AcguO3w.png)
-
 # Requirements
 - CoreAddons.
 - KCMUtils.
