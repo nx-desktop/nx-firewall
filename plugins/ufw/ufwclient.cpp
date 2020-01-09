@@ -71,7 +71,7 @@ void UfwClient::queryStatus(bool readDefaults, bool listProfiles)
 {
     if (isBusy())
     {
-        qWarning() << "Ufw client is bussy";
+        qWarning() << "Ufw client is busy";
         return;
     }
 
