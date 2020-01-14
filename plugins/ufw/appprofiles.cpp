@@ -80,7 +80,7 @@ const QList<Entry> & get()
 Entry get(const QString &name)
 {
     // This feels *so* wrong.
-    for(const auto entry : get()) {
+    for(const auto entry : qAsConst(get())) {
         if (entry.name == name) {
             return entry;
         }
