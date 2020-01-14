@@ -79,31 +79,62 @@ QVariantList NetstatHelper::parseSSOutput(const QByteArray &netstatOutput)
     // discard lines.
     while (outputLines.size()) {
         if (outputLines.first().indexOf("Recv-Q")) {
+            outputLines.removeFirst();
             break;
         }
         outputLines.removeFirst();
     }
 
-    // Parse Columns
-    QString headerLines = outputLines.first();
-    outputLines.removeFirst();
-    QStringList headers = headerLines.split(" ", Qt::SkipEmptyParts);
-    qDebug() << "Headers" << headers;
+    // can't easily parse because of the spaces in Local and Peer AddressPort.
+    QStringList headerLines = {
+        i18n("Netid"),
+        i18n("State"),
+        i18n("Recv-Q"),
+        i18n("Send-Q"),
+        i18n("Local Address:Port"),
+        i18n("Peer Address:Port"),
+        i18n("Process"),
+    };
 
+    /* Insertion order:
+        ProtocolRole = Qt::UserRole + 1,
+        LocalAddressRole,
+        ForeignAddressRole,
+        StatusRole,
+        PidRole,
+        ProgramRole
+    */
     // Extract Information
     for (auto line : outputLines)
     {
         QStringList values = line.split(" ", Qt::SkipEmptyParts);
 
         // Some lines lack one or two values.
-        while (values.size() < headers.size()) {
+        while (values.size() < headerLines.size()) {
             values.append(QString());
         }
 
-        QVariantList connection;
-        for (auto value : values) {
-            connection.append(value);
+        QString appName;
+        QString pid;
+
+        // TODO: Extract Pid and Program correctly.
+        if (values[6].size()) {
+            values[6].remove(0, QStringLiteral("users:((").size());
+            values[6].chop(QStringLiteral("))").size());
+
+            QStringList substrings = values[6].split(',');
+            appName = substrings[0].remove("\"");
+            pid = substrings[1].split('=')[1];
         }
+
+        QVariantList connection {
+            values[0], // NetId
+            values[4], // Local Address
+            values[5], // Peer Address,
+            values[1], // State
+            pid, // Pid + Program. //TODO: Extract program name.
+            appName,
+        };
 
         connections.append((QVariant) connection);
     }
