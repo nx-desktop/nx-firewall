@@ -57,18 +57,14 @@ QVariant RuleListModel::data(const QModelIndex &index, int role) const
 
     const UFW::Rule rule = m_rules.at(index.row());
 
-    if (role == ActionRole)
-        return rule.actionStr();
-    else if (role == FromRole)
-        return rule.fromStr();
-    else if (role == ToRole)
-        return rule.toStr();
-    else if (role == Ipv6Role)
-        return rule.getV6();
-    else if (role == LoggingRole)
-        return rule.loggingStr();
-
-    return QVariant();
+    switch(role) {
+        case ActionRole: return rule.actionStr();
+        case FromRole: return rule.fromStr();
+        case ToRole: return rule.toStr();
+        case Ipv6Role: return rule.getV6();
+        case LoggingRole: return rule.loggingStr();
+    }
+    return {};
 }
 
 void RuleListModel::setProfile(UFW::Profile profile)
