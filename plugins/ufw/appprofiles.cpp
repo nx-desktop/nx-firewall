@@ -79,13 +79,13 @@ const QList<Entry> & get()
 
 Entry get(const QString &name)
 {
-    QList<Entry>::ConstIterator it(get().constBegin()),
-                                end(get().constEnd());
-
-    for(; it!=end; ++it)
-        if((*it).name==name)
-            return *it;
-    return Entry(QString());
+    // This feels *so* wrong.
+    for(const auto entry : get()) {
+        if (entry.name == name) {
+            return entry;
+        }
+    }
+    return Entry({});
 }
 
 }
