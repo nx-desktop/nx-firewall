@@ -81,7 +81,6 @@ void LogListModel::addRawLogs(QStringList rawLogsList)
 
 QHash<int, QByteArray> LogListModel::roleNames() const
 {
-    // ORDER MATTERS !!!!
     return {
         {SourceAddressRole, "sourceAddress"},
         {SourcePortRole, "sourcePort"},
