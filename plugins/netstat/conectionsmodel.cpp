@@ -74,9 +74,6 @@ void ConnectionsModel::refreshConnections()
         {
             beginResetModel();
             m_connectionsData = job->data().value("connections", QVariantList()).toList();
-
-//            qDebug() << m_connectionsData;
-
             endResetModel();
         } else
             qWarning() << "BACKEND ERROR: " << job->error() << job->errorText();
