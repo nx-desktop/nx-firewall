@@ -17,9 +17,9 @@ KAuth::ActionReply NetstatHelper::query(const QVariantMap)
 
     QProcess    netstat;
     QStringList netstatArgs("-ntuap");
-    qDebug() << "run" << NETSTAT_BINARY_PATH << netstatArgs;
+    qDebug() << "run" << "netstat" << netstatArgs;
 
-    netstat.start(NETSTAT_BINARY_PATH, netstatArgs, QIODevice::ReadOnly);
+    netstat.start("netstat", netstatArgs, QIODevice::ReadOnly);
     if (netstat.waitForStarted())
         netstat.waitForFinished();
 
