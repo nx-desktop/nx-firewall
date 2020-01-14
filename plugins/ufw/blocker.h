@@ -34,17 +34,17 @@ class Blocker : public QObject
     Q_OBJECT
 
     public:
-    
+
     Blocker(QObject *parent) : QObject(parent), active(false) { }
     virtual ~Blocker()                                        { }
-    
+
     void add(QObject *object);
     bool eventFilter(QObject *object, QEvent *event);
     void setActive(bool b)                                    { active=b; }
     bool isActive() const                                     { return active; }
 
     private:
-    
+
     bool active;
 };
 

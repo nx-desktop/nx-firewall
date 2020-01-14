@@ -36,10 +36,10 @@ Entry::Entry(const QString &n, const QString &p)
      : name(n), ports(p)
 {
     ports.replace('|', ' ');
-    
+
 //     bool hasUdp=ports.contains("/udp"),
 //          hasTcp=ports.contains("/tcp);
-//          
+//
 //     protocol=hasUdp==hasTcp ? Types::PROTO_BOTH
 //                             : hasUdp
 //                                 ? Types::PROTO_UDP
@@ -50,7 +50,7 @@ const QList<Entry> & get()
 {
     static QList<Entry> profiles;
     static bool         init=false;
-    
+
     if(!init)
     {
         static const char * constProfileDir="/etc/ufw/applications.d/";
@@ -77,7 +77,7 @@ const QList<Entry> & get()
             }
         qSort(profiles);
     }
-        
+
     return profiles;
 }
 

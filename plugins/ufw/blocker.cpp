@@ -36,8 +36,8 @@ void Blocker::add(QObject *object)
 bool Blocker::eventFilter(QObject *object, QEvent *event)
 {
     if(active &&
-        (QEvent::MouseButtonPress==event->type() || QEvent::MouseButtonRelease==event->type() || 
-        QEvent::MouseButtonDblClick==event->type() || 
+        (QEvent::MouseButtonPress==event->type() || QEvent::MouseButtonRelease==event->type() ||
+        QEvent::MouseButtonDblClick==event->type() ||
         QEvent::KeyPress==event->type() || QEvent::KeyRelease==event->type()))
         return true;
     return QObject::eventFilter(object, event);

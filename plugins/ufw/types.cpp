@@ -129,7 +129,7 @@ PredefinedPort toPredefinedPort(const QString &str)
             if((*it)==str)
                 return (Types::PredefinedPort)i;
     }
-    
+
     return PP_COUNT;
 }
 

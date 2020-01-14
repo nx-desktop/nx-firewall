@@ -93,7 +93,7 @@ enum PredefinedPort
     PP_TELNET,
     PP_NTP,
     PP_CUPS,
-    
+
     PP_COUNT
 };
 
