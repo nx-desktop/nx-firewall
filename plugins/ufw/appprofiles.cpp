@@ -38,6 +38,10 @@ Entry::Entry(const QString &n, const QString &p)
     ports.replace('|', ' ');
 }
 
+/* TODO: Find a way to fix this.
+ this feels really wrong. a Function that returns a reference
+for a static variable created inside of it.
+*/
 const QList<Entry> & get()
 {
     static QList<Entry> profiles;
