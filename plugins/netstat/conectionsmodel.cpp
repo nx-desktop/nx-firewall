@@ -43,15 +43,14 @@ QVariant ConnectionsModel::data(const QModelIndex &index, int role) const
 
 QHash<int, QByteArray> ConnectionsModel::roleNames() const
 {
-    QHash<int, QByteArray> roles;
-    roles[ProtocolRole] = "protocol";
-    roles[LocalAddressRole] = "localAddress";
-    roles[ForeignAddressRole] = "foreignAddress";
-    roles[StatusRole] = "status";
-    roles[PidRole] = "pid";
-    roles[ProgramRole] = "program";
-
-    return roles;
+    return {
+        {ProtocolRole, "protocol"},
+        {LocalAddressRole, "localAddress"},
+        {ForeignAddressRole, "foreignAddress"},
+        {StatusRole, "status"},
+        {PidRole, "pid"},
+        {ProgramRole, "program"},
+    };
 }
 
 void ConnectionsModel::refreshConnections()
