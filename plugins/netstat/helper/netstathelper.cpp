@@ -6,7 +6,21 @@
 
 NetstatHelper::NetstatHelper()
 {
+    int exitCode = QProcess::execute("netstat", {"--version"});
+    if (exitCode == -2) { // could not execute file
+        qWarning() << "netstat is not installed or not in the PATH, please configure system.";
+        mHasNetstat = false;
+    } else {
+        mHasNetstat = true;
+    }
 
+    exitCode = QProcess::execute("ss", {"--version"});
+    if (exitCode == -2) { // could not execute file
+        qWarning() << "ss is not installed or not in the PATH, install iptroute-2.";
+        mHasSS = false;
+    } else {
+        mHasSS = true;
+    }
 }
 
 KAuth::ActionReply NetstatHelper::query(const QVariantMap)
@@ -15,9 +29,19 @@ KAuth::ActionReply NetstatHelper::query(const QVariantMap)
 
     QProcess    netstat;
     QStringList netstatArgs("-ntuap");
-    qDebug() << "run" << "netstat" << netstatArgs;
+    QString executable = mHasSS ? QStringLiteral("ss")
+                      : mHasNetstat ? QStringLiteral("netstat")
+                      : QString();
 
-    netstat.start("netstat", netstatArgs, QIODevice::ReadOnly);
+    if (executable.isEmpty()) {
+        qWarning() << "No iproute or net-tools installed, can't run.";
+        KAuth::ActionReply::HelperErrorReply(-2);
+        return {};
+    }
+
+    qDebug() << "run" << executable << netstatArgs;
+
+    netstat.start(executable, netstatArgs, QIODevice::ReadOnly);
     if (netstat.waitForStarted())
         netstat.waitForFinished();
 
@@ -29,7 +53,6 @@ KAuth::ActionReply NetstatHelper::query(const QVariantMap)
         reply.addData("response", netstat.readAllStandardError());
     } else {
         QVariantList connections = parseOutput(netstat.readAllStandardOutput());
-//        qDebug() << connections;
         reply.addData("connections", connections);
     }
 
@@ -37,6 +60,58 @@ KAuth::ActionReply NetstatHelper::query(const QVariantMap)
 }
 
 QVariantList NetstatHelper::parseOutput(const QByteArray &netstatOutput)
+{
+    if (mHasSS) {
+        return parseSSOutput(netstatOutput);
+    } else if (mHasNetstat) {
+        return parseNetstatOutput(netstatOutput);
+    }
+    return {};
+}
+
+QVariantList NetstatHelper::parseSSOutput(const QByteArray &netstatOutput)
+{
+   QString rawOutput = netstatOutput;
+    QStringList outputLines = rawOutput.split("\n");
+
+    QVariantList connections;
+
+    // discard lines.
+    while (outputLines.size()) {
+        if (outputLines.first().indexOf("Recv-Q")) {
+            break;
+        }
+        outputLines.removeFirst();
+    }
+
+    // Parse Columns
+    QString headerLines = outputLines.first();
+    outputLines.removeFirst();
+    QStringList headers = headerLines.split(" ", Qt::SkipEmptyParts);
+    qDebug() << "Headers" << headers;
+
+    // Extract Information
+    for (auto line : outputLines)
+    {
+        QStringList values = line.split(" ", Qt::SkipEmptyParts);
+
+        // Some lines lack one or two values.
+        while (values.size() < headers.size()) {
+            values.append(QString());
+        }
+
+        QVariantList connection;
+        for (auto value : values) {
+            connection.append(value);
+        }
+
+        connections.append((QVariant) connection);
+    }
+
+    return connections;
+}
+
+QVariantList NetstatHelper::parseNetstatOutput(const QByteArray &netstatOutput)
 {
     QString rawOutput = netstatOutput;
     QStringList outputLines = rawOutput.split("\n");
@@ -51,8 +126,6 @@ QVariantList NetstatHelper::parseOutput(const QByteArray &netstatOutput)
 
     for (auto line : outputLines)
     {
-//        qDebug() << line;
-
         lineIdx ++;
         if (line.isEmpty())
             continue;
