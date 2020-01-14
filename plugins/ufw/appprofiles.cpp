@@ -36,14 +36,6 @@ Entry::Entry(const QString &n, const QString &p)
      : name(n), ports(p)
 {
     ports.replace('|', ' ');
-
-//     bool hasUdp=ports.contains("/udp"),
-//          hasTcp=ports.contains("/tcp);
-//
-//     protocol=hasUdp==hasTcp ? Types::PROTO_BOTH
-//                             : hasUdp
-//                                 ? Types::PROTO_UDP
-//                                 : Types::PROTO_TCP;
 }
 
 const QList<Entry> & get()
