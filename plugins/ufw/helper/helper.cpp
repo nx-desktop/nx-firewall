@@ -321,13 +321,6 @@ ActionReply Helper::editRule(const QVariantMap &args, const QString &cmd)
                {"--list"}, cmd);
 }
 
-// ActionReply Helper::editRuleDescr(const QVariantMap &args, const QString &cmd)
-// {
-//     checkFolder();
-//     return run(QStringList() << "--updateDescr="+args["xml"].toString(),
-//                QStringList() << "--list", cmd);
-// }
-
 ActionReply Helper::reset(const QString &cmd)
 {
     return run({"--reset"},
