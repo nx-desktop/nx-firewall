@@ -35,9 +35,11 @@ bool UfwClient::enabled() const
 
 void UfwClient::setEnabled(const bool &enabled)
 {
-    QVariantMap args;
-    args["cmd"]="setStatus";
-    args["status"] = enabled;
+    QVariantMap args {
+        {"cmd", "setStatus"},
+        {"status", enabled},
+    };
+
     KAuth::Action modifyAction = buildModifyAction(args);
 
     m_status = enabled ? i18n("Enabling the firewall...") : i18n("Disabling the firewall...");
@@ -75,9 +77,11 @@ void UfwClient::queryStatus(bool readDefaults, bool listProfiles)
         return;
     }
 
-    QVariantMap args;
-    args["defaults"]=readDefaults;
-    args["profiles"]=listProfiles;
+    QVariantMap args {
+        {"defaults", readDefaults},
+        {"profiles", listProfiles},
+    };
+
     KAuth::Action queryAction = buildQueryAction(args);
 
     setStatus(i18n("Querying firewall status..."));
@@ -106,9 +110,13 @@ void UfwClient::queryStatus(bool readDefaults, bool listProfiles)
 
 void UfwClient::setDefaultIncomingPolicy(QString defaultIncomingPolicy)
 {
-    QVariantMap args;
-    args["cmd"]="setDefaults";
-    args["xml"]=QString("<defaults incoming=\"")+defaultIncomingPolicy+QString("\" />");
+    const QString xmlArg = QStringLiteral("<defaults incoming=\"%1\"/>").arg(defaultIncomingPolicy);
+
+    QVariantMap args {
+        {"cmd","setDefaults"},
+        {"xml", xmlArg},
+    };
+
     KAuth::Action modifyAction = buildModifyAction(args);
     m_status = i18n("Setting firewall default incomming policy...");
     m_isBusy = true;
@@ -132,9 +140,13 @@ void UfwClient::setDefaultIncomingPolicy(QString defaultIncomingPolicy)
 
 void UfwClient::setDefaultOutgoingPolicy(QString defaultOutgoingPolicy)
 {
-    QVariantMap args;
-    args["cmd"]="setDefaults";
-    args["xml"]=QString("<defaults outgoing=\"")+defaultOutgoingPolicy+QString("\" />");
+    const QString xmlArg = QStringLiteral("<defaults outgoing=\"%1\"/>").arg(defaultOutgoingPolicy);
+
+    QVariantMap args {
+        {"cmd", "setDefaults"},
+        {"xml", xmlArg},
+    };
+
     KAuth::Action modifyAction = buildModifyAction(args);
     m_status = i18n("Setting firewall default outgoing policy...");
     m_isBusy = true;
@@ -291,10 +303,11 @@ void UfwClient::addRule(RuleWrapper *ruleWrapper)
 
     UFW::Rule rule = ruleWrapper->getRule();
 
-    QVariantMap args;
-    args["cmd"]="addRules";
-    args["count"]=1;
-    args["xml"+QString().setNum(0)]=rule.toXml();
+    QVariantMap args {
+        {"cmd", "addRules"},
+        {"count",1},
+        {"xml0", rule.toXml()},
+    };
 
     KAuth::Action modifyAction = buildModifyAction(args);
     setStatus(i18n("Adding rule..."));
@@ -326,11 +339,13 @@ void UfwClient::removeRule(int index)
     }
 
     // Correct index
-    index ++;
+    index += 1;
 
-    QVariantMap args;
-    args["cmd"]="removeRule";
-    args["index"]=QString().setNum(index);
+    QVariantMap args {
+        {"cmd", "removeRule"},
+        {"index", QString::number(index)},
+    };
+
     KAuth::Action modifyAction = buildModifyAction(args);
     setStatus(i18n("Removing rule from firewall..."));
 
@@ -363,9 +378,11 @@ void UfwClient::updateRule(RuleWrapper *ruleWrapper)
     UFW::Rule rule = ruleWrapper->getRule();
 
     rule.setPosition(rule.getPosition() + 1);
-    QVariantMap args;
-    args["cmd"]="editRule";
-    args["xml"]=rule.toXml();
+    QVariantMap args {
+        {"cmd", "editRule"},
+        {"xml", rule.toXml()},
+    };
+
     KAuth::Action modifyAction = buildModifyAction(args);
     setStatus(i18n("Updating rule..."));
 
@@ -401,13 +418,15 @@ void UfwClient::moveRule(int from, int to)
         return;
     }
     // Correct indices
-    from ++;
-    to ++;
+    from += 1;
+    to += 1;
 
-    QVariantMap args;
-    args["cmd"]="moveRule";
-    args["from"]=from;
-    args["to"]=to;
+    QVariantMap args {
+        {"cmd", "moveRule"},
+        {"from", from},
+        {"to", to},
+    };
+
     KAuth::Action modifyAction = buildModifyAction(args);
     setStatus(i18n("Moving rule in firewall..."));
 
@@ -432,13 +451,12 @@ void UfwClient::moveRule(int from, int to)
 
 QStringList UfwClient::getKnownProtocols()
 {
-    return QStringList() << i18n("Any") << "TCP" << "UDP";
+    return { i18n("Any"), "TCP", "UDP" };
 }
 
 QStringList UfwClient::getKnownInterfaces()
 {
-    QStringList interfaces_names;
-    interfaces_names << i18n("Any");
+    QStringList interfaces_names({i18n("Any")});
 
     QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
     for (QNetworkInterface iface : interfaces)

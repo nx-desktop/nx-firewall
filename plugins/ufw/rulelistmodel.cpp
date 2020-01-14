@@ -78,12 +78,11 @@ void RuleListModel::setProfile(UFW::Profile profile)
 
 QHash<int, QByteArray> RuleListModel::roleNames() const
 {
-    QHash<int, QByteArray> roles;
-    roles[ActionRole] = "action";
-    roles[FromRole] = "from";
-    roles[ToRole] = "to";
-    roles[Ipv6Role] = "ipv6";
-    roles[LoggingRole] = "logging";
-
-    return roles;
+    return {
+        {ActionRole, "action"},
+        {FromRole, "from"},
+        {ToRole, "to"},
+        {Ipv6Role, "ipv6"},
+        {LoggingRole, "logging"},
+    };
 }
