@@ -27,16 +27,16 @@ int ConnectionsModel::rowCount(const QModelIndex &parent) const
 QVariant ConnectionsModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
-        return QVariant();
+        return {};
 
     if (index.row() < 0 || index.row() >= m_connectionsData.size())
-        return QVariant();
+        return {};
 
     QVariantList connection = m_connectionsData.at(index.row()).toList();
 
     int value_index = role - ProtocolRole;
     if (value_index < 0 || value_index >= connection.size())
-        return QString();
+        return {};
 
     return connection.at(value_index);
 }
