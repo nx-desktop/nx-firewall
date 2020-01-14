@@ -459,7 +459,7 @@ QStringList UfwClient::getKnownInterfaces()
     QStringList interfaces_names({i18n("Any")});
 
     QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
-    for (QNetworkInterface iface : interfaces)
+    for (QNetworkInterface iface : qAsConst(interfaces))
         interfaces_names << iface.name();
 
     return interfaces_names;
