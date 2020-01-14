@@ -201,7 +201,7 @@ ActionReply Helper::setProfile(const QVariantMap &args, const QString &cmd)
 
         cmdArgs.append("--clearRules");
         for(unsigned int i=0; i < count; ++i) {
-            const QString argument = args["rule"+QString::number(i)].toString()
+            const QString argument = args["rule"+QString::number(i)].toString();
             cmdArgs.append("--add="+argument);
         }
     }
