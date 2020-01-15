@@ -96,14 +96,6 @@ QVariantList NetstatHelper::parseSSOutput(const QByteArray &netstatOutput)
         QStringLiteral("Process"),
     };
 
-    /* Insertion order:
-        ProtocolRole = Qt::UserRole + 1,
-        LocalAddressRole,
-        ForeignAddressRole,
-        StatusRole,
-        PidRole,
-        ProgramRole
-    */
     // Extract Information
     for (auto line : outputLines)
     {
@@ -125,6 +117,14 @@ QVariantList NetstatHelper::parseSSOutput(const QByteArray &netstatOutput)
             pid = substrings[1].split('=')[1];
         }
 
+        /* Insertion order needs to match the Model Columns:
+            ProtocolRole = Qt::UserRole + 1,
+            LocalAddressRole,
+            ForeignAddressRole,
+            StatusRole,
+            PidRole,
+            ProgramRole
+        */
         QVariantList connection {
             values[0], // NetId
             values[4], // Local Address
