@@ -4,8 +4,6 @@
 #include <QProcess>
 #include <QStringList>
 
-#include "netstat_helper_config.h"
-
 NetstatHelper::NetstatHelper()
 {
 
