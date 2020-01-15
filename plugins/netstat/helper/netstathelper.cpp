@@ -116,8 +116,6 @@ QVariantList NetstatHelper::parseSSOutput(const QByteArray &netstatOutput)
 
         QString appName;
         QString pid;
-
-        // TODO: Extract Pid and Program correctly.
         if (values[6].size()) {
             values[6].remove(0, QStringLiteral("users:((").size());
             values[6].chop(QStringLiteral("))").size());
