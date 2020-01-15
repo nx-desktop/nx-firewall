@@ -48,10 +48,25 @@ KCM.SimpleKCM {
 
     Loader {
         id: ruleDetailsLoader
-        anchors.fill: parent
     }
 
     ColumnLayout {
+        Kirigami.InlineMessage {
+            id: netstatError
+            type: Kirigami.MessageType.Information
+            text: netStatClient.status !== ""
+            visible: netStatClient.status !== ""
+            Layout.fillWidth: true
+        }
+
+        Kirigami.InlineMessage {
+            id: ufwError
+            type: Kirigami.MessageType.Information
+            text: ufwClient.status
+            visible: ufwClient.status !== ""
+            Layout.fillWidth: true
+        }
+
         QQC2.TabBar {
             id: tabButtons
 
@@ -87,10 +102,6 @@ KCM.SimpleKCM {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
-        }
-
-        QQC2.Label {
-            text: ufwClient.status
         }
     }
 
