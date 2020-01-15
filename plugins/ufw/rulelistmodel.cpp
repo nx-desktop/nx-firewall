@@ -72,23 +72,20 @@ int RuleListModel::rowCount(const QModelIndex &parent) const
 
 QVariant RuleListModel::data(const QModelIndex &index, int role) const
 {
-    if (index.row() < 0 || index.row() >= m_rules.count())
-        return QVariant();
+    if (index.row() < 0 || index.row() >= m_rules.count()) {
+        return {};
+    }
 
     const UFW::Rule rule = m_rules.at(index.row());
 
-    if (role == ActionRole)
-        return rule.actionStr();
-    else if (role == FromRole)
-        return rule.fromStr();
-    else if (role == ToRole)
-        return rule.toStr();
-    else if (role == Ipv6Role)
-        return rule.getV6();
-    else if (role == LoggingRole)
-        return rule.loggingStr();
-
-    return QVariant();
+    switch(role) {
+        case ActionRole: return rule.actionStr();
+        case FromRole: return rule.fromStr();
+        case ToRole: return rule.toStr();
+        case Ipv6Role: return rule.getV6();
+        case LoggingRole: return rule.loggingStr();
+    }
+    return {};
 }
 
 void RuleListModel::setProfile(UFW::Profile profile)
@@ -102,12 +99,11 @@ void RuleListModel::setProfile(UFW::Profile profile)
 
 QHash<int, QByteArray> RuleListModel::roleNames() const
 {
-    QHash<int, QByteArray> roles;
-    roles[ActionRole] = "action";
-    roles[FromRole] = "from";
-    roles[ToRole] = "to";
-    roles[Ipv6Role] = "ipv6";
-    roles[LoggingRole] = "logging";
-
-    return roles;
+    return {
+        {ActionRole, "action"},
+        {FromRole, "from"},
+        {ToRole, "to"},
+        {Ipv6Role, "ipv6"},
+        {LoggingRole, "logging"},
+    };
 }

@@ -36,21 +36,17 @@ Entry::Entry(const QString &n, const QString &p)
      : name(n), ports(p)
 {
     ports.replace('|', ' ');
-    
-//     bool hasUdp=ports.contains("/udp"),
-//          hasTcp=ports.contains("/tcp);
-//          
-//     protocol=hasUdp==hasTcp ? Types::PROTO_BOTH
-//                             : hasUdp
-//                                 ? Types::PROTO_UDP
-//                                 : Types::PROTO_TCP;
 }
 
+/* TODO: Find a way to fix this.
+ this feels really wrong. a Function that returns a reference
+for a static variable created inside of it.
+*/
 const QList<Entry> & get()
 {
     static QList<Entry> profiles;
     static bool         init=false;
-    
+
     if(!init)
     {
         static const char * constProfileDir="/etc/ufw/applications.d/";
@@ -77,19 +73,19 @@ const QList<Entry> & get()
             }
         qSort(profiles);
     }
-        
+
     return profiles;
 }
 
 Entry get(const QString &name)
 {
-    QList<Entry>::ConstIterator it(get().constBegin()),
-                                end(get().constEnd());
-
-    for(; it!=end; ++it)
-        if((*it).name==name)
-            return *it;
-    return Entry(QString());
+    // This feels *so* wrong.
+    for(const auto entry : qAsConst(get())) {
+        if (entry.name == name) {
+            return entry;
+        }
+    }
+    return Entry({});
 }
 
 }

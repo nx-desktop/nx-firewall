@@ -72,12 +72,12 @@ ActionReply Helper::query(const QVariantMap &args)
 {
     qDebug() << __FUNCTION__;
     ActionReply reply=args["defaults"].toBool()
-                        ? run(QStringList() << "--status" << "--defaults" << "--list" << "--modules", "query")
-                        : run(QStringList() << "--status" << "--list", "query");
+                        ? run({"--status", "--defaults", "--list", "--modules"}, "query")
+                        : run({"--status", "--list"}, "query");
 
     if(args["profiles"].toBool()) {
         QDir dir(KCM_UFW_DIR);
-        QStringList profiles=dir.entryList(QStringList() << "*" PROFILE_EXTENSION);
+        QStringList profiles=dir.entryList({"*" PROFILE_EXTENSION });
         QMap<QString, QVariant> data;
         for (const QString &profile : profiles) {
             QFile f(dir.canonicalPath()+QChar('/')+profile);
@@ -167,25 +167,28 @@ ActionReply Helper::modify(const QVariantMap &args)
 
 ActionReply Helper::setStatus(const QVariantMap &args, const QString &cmd)
 {
-    return run(QStringList() << "--setEnabled="+QString(args["status"].toBool() ? "true" : "false"),
-               QStringList() << "--status", cmd);
+    const QString enabled = args["status"].toBool() ? "true" : "false";
+
+    return run({"--setEnabled=" + enabled},
+               {"--status"}, cmd);
 }
 
 ActionReply Helper::setDefaults(const QVariantMap &args, const QString &cmd)
 {
-    QStringList query;
-
-    query << "--defaults";
+    QStringList query({"--defaults"});
     if (args["ipv6"].toBool())
-        query << "--list";
-    return run(QStringList() << "--setDefaults="+args["xml"].toString(),
+        query.append("--list");
+
+    const QString defaults = args["xml"].toString();
+
+    return run({"--setDefaults="+defaults},
                query, cmd);
 }
 
 ActionReply Helper::setModules(const QVariantMap &args, const QString &cmd)
 {
-    return run(QStringList() << "--setModules="+args["xml"].toString(),
-               QStringList() << "--modules", cmd);
+    return run({"--setModules="+args["xml"].toString()},
+               {"--modules"}, cmd);
 }
 
 ActionReply Helper::setProfile(const QVariantMap &args, const QString &cmd)
@@ -196,27 +199,26 @@ ActionReply Helper::setProfile(const QVariantMap &args, const QString &cmd)
     {
         unsigned int count=args["ruleCount"].toUInt();
 
-        cmdArgs << "--clearRules";
-        for(unsigned int i=0; i<count; ++i)
-            cmdArgs << "--add="+args["rule"+QString().setNum(i)].toString();
+        cmdArgs.append("--clearRules");
+        for(unsigned int i=0; i < count; ++i) {
+            const QString argument = args["rule"+QString::number(i)].toString();
+            cmdArgs.append("--add="+argument);
+        }
     }
 
-    if(args.contains("defaults"))
+    if(args.contains("defaults")) {
         cmdArgs << "--setDefaults="+args["defaults"].toString();
-    if(args.contains("modules"))
+    }
+    if(args.contains("modules")) {
         cmdArgs << "--setModules="+args["modules"].toString();
+    }
 
-    if(cmdArgs.isEmpty())
-    {
-        ActionReply reply=ActionReply::HelperErrorReply(STATUS_INVALID_ARGUMENTS);
-        return reply;
+    if(cmdArgs.isEmpty()) {
+        return ActionReply::HelperErrorReply(STATUS_INVALID_ARGUMENTS);
     }
-    else
-    {
-        checkFolder();
-        return run(cmdArgs,
-                   QStringList() << "--status" << "--defaults" << "--list" << "--modules", cmd);
-    }
+
+    checkFolder();
+    return run(cmdArgs, {"--status", "--defaults", "--list", "--modules"}, cmd);
 }
 
 ActionReply Helper::saveProfile(const QVariantMap &args, const QString &cmd)
@@ -251,7 +253,7 @@ ActionReply Helper::saveProfile(const QVariantMap &args, const QString &cmd)
 
     reply.addData("cmd", cmd);
     reply.addData("name", name);
-    reply.addData("profiles", QDir(KCM_UFW_DIR).entryList(QStringList() << "*" PROFILE_EXTENSION));
+    reply.addData("profiles", QDir(KCM_UFW_DIR).entryList({"*" PROFILE_EXTENSION }));
     return reply;
 }
 
@@ -273,7 +275,7 @@ ActionReply Helper::deleteProfile(const QVariantMap &args, const QString &cmd)
 
     reply.addData("cmd", cmd);
     reply.addData("name", name);
-    reply.addData("profiles", QDir(KCM_UFW_DIR).entryList(QStringList() << "*" PROFILE_EXTENSION));
+    reply.addData("profiles", QDir(KCM_UFW_DIR).entryList({"*" PROFILE_EXTENSION }));
     return reply;
 }
 
@@ -286,10 +288,10 @@ ActionReply Helper::addRules(const QVariantMap &args, const QString &cmd)
         QStringList cmdArgs;
 
         for(unsigned int i=0; i<count; ++i)
-            cmdArgs << "--add="+args["xml"+QString().setNum(i)].toString();
+            cmdArgs << "--add="+args["xml"+QString::number(i)].toString();
 
         checkFolder();
-        return run(cmdArgs, QStringList() << "--list", cmd);
+        return run(cmdArgs, {"--list"}, cmd);
     }
     ActionReply reply=ActionReply::HelperErrorReply(STATUS_INVALID_ARGUMENTS);
     return reply;
@@ -298,36 +300,31 @@ ActionReply Helper::addRules(const QVariantMap &args, const QString &cmd)
 ActionReply Helper::removeRule(const QVariantMap &args, const QString &cmd)
 {
     checkFolder();
-    return run(QStringList() << "--remove="+args["index"].toString(),
-               QStringList() << "--list", cmd);
+    return run({"--remove="+args["index"].toString()},
+               {"--list"}, cmd);
 }
 
 ActionReply Helper::moveRule(const QVariantMap &args, const QString &cmd)
 {
     checkFolder();
-    return run(QStringList() << "--move="+QString().setNum(args["from"].toUInt())+':'+
-                                          QString().setNum(args["to"].toUInt()),
-               QStringList() << "--list", cmd);
+    const QString from = QString::number(args["from"].toUInt());
+    const QString to = QString::number(args["to"].toUInt());
+
+    return run({"--move="+ from + ':' + to },
+               {"--list"}, cmd);
 }
 
 ActionReply Helper::editRule(const QVariantMap &args, const QString &cmd)
 {
     checkFolder();
-    return run(QStringList() << "--update="+args["xml"].toString(),
-               QStringList() << "--list", cmd);
+    return run({"--update="+args["xml"].toString()},
+               {"--list"}, cmd);
 }
-
-// ActionReply Helper::editRuleDescr(const QVariantMap &args, const QString &cmd)
-// {
-//     checkFolder();
-//     return run(QStringList() << "--updateDescr="+args["xml"].toString(),
-//                QStringList() << "--list", cmd);
-// }
 
 ActionReply Helper::reset(const QString &cmd)
 {
-    return run(QStringList() << "--reset",
-               QStringList() << "--status" << "--defaults" << "--list" << "--modules", cmd);
+    return run({"--reset"},
+               {"--status", "--defaults", "--list", "--modules"}, cmd);
 }
 
 ActionReply Helper::run(const QStringList &args, const QStringList &second, const QString &cmd)

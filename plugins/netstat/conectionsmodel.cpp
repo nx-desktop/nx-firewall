@@ -27,31 +27,30 @@ int ConnectionsModel::rowCount(const QModelIndex &parent) const
 QVariant ConnectionsModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
-        return QVariant();
+        return {};
 
     if (index.row() < 0 || index.row() >= m_connectionsData.size())
-        return QVariant();
+        return {};
 
     QVariantList connection = m_connectionsData.at(index.row()).toList();
 
     int value_index = role - ProtocolRole;
     if (value_index < 0 || value_index >= connection.size())
-        return QString();
+        return {};
 
     return connection.at(value_index);
 }
 
 QHash<int, QByteArray> ConnectionsModel::roleNames() const
 {
-    QHash<int, QByteArray> roles;
-    roles[ProtocolRole] = "protocol";
-    roles[LocalAddressRole] = "localAddress";
-    roles[ForeignAddressRole] = "foreignAddress";
-    roles[StatusRole] = "status";
-    roles[PidRole] = "pid";
-    roles[ProgramRole] = "program";
-
-    return roles;
+    return {
+        {ProtocolRole, "protocol"},
+        {LocalAddressRole, "localAddress"},
+        {ForeignAddressRole, "foreignAddress"},
+        {StatusRole, "status"},
+        {PidRole, "pid"},
+        {ProgramRole, "program"},
+    };
 }
 
 void ConnectionsModel::refreshConnections()
@@ -75,9 +74,6 @@ void ConnectionsModel::refreshConnections()
         {
             beginResetModel();
             m_connectionsData = job->data().value("connections", QVariantList()).toList();
-
-//            qDebug() << m_connectionsData;
-
             endResetModel();
         } else
             qWarning() << "BACKEND ERROR: " << job->error() << job->errorText();

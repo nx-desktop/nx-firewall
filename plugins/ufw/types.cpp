@@ -121,15 +121,16 @@ PredefinedPort toPredefinedPort(const QString &str)
 {
     for(int i=0; i<Types::PP_COUNT; ++i)
     {
-        QStringList                ports=Types::toString((Types::PredefinedPort)i).split(" ");
-        QStringList::ConstIterator it(ports.constBegin()),
-                                   end(ports.constEnd());
+        const auto enumPort = static_cast<Types::PredefinedPort>(i);
+        const auto typesAtIndex = Types::toString(enumPort).split(" ");
 
-        for(; it!=end; ++it)
-            if((*it)==str)
-                return (Types::PredefinedPort)i;
+        for (const auto &port : typesAtIndex) {
+            if (port == str) {
+                return enumPort;
+            }
+        }
     }
-    
+
     return PP_COUNT;
 }
 

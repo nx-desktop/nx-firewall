@@ -101,17 +101,15 @@ void LogListModel::addRawLogs(QStringList rawLogsList)
 
 QHash<int, QByteArray> LogListModel::roleNames() const
 {
-    QHash<int, QByteArray> roles;
-    // ORDER MATTERS !!!!
-    roles[SourceAddressRole] = "sourceAddress";
-    roles[SourcePortRole] = "sourcePort";
-    roles[DestinationAddressRole] = "destinationAddress";
-    roles[DestinationPortRole] = "destinationPort";
-    roles[ProtocolRole] = "protocol";
-    roles[InterfaceRole] = "interface";
-    roles[ActionRole] = "action";
-    roles[TimeRole] = "time";
-    roles[DateRole] = "date";
-
-    return roles;
+    return {
+        {SourceAddressRole, "sourceAddress"},
+        {SourcePortRole, "sourcePort"},
+        {DestinationAddressRole, "destinationAddress"},
+        {DestinationPortRole, "destinationPort"},
+        {ProtocolRole, "protocol"},
+        {InterfaceRole, "interface"},
+        {ActionRole, "action"},
+        {TimeRole, "time"},
+        {DateRole, "date"},
+    };
 }
