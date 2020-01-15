@@ -6,12 +6,12 @@ addons:
     packages:
     - realpath
 install:
-- docker pull ubuntu:bionic
+- docker pull kdeneon/plasma:user-lts
 - wget https://raw.githubusercontent.com/Nitrux/nitrux-repository-util/master/nomad-repository-util.sh
   -O nomad-repository-util.sh
 - chmod +x nomad-repository-util.sh
 script:
-- docker run --rm -v $(pwd)/:/build/ -w /build/ ubuntu:bionic /bin/bash travis-build.sh
+- docker run --rm -v $(pwd)/:/build/ -w /build/ kdeneon/plasma:user-lts /bin/bash travis-build.sh
 branches:
   only:
   - master
