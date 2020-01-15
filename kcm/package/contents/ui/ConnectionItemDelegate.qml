@@ -71,7 +71,7 @@ MouseArea {
 //        }
         PlasmaComponents.Label {
             Layout.preferredWidth: 120
-            text: model.program
+            text: model.program !== "" ? model.program : ""
         }
     }
 
