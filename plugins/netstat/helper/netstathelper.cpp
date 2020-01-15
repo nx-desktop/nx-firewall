@@ -25,8 +25,6 @@ KAuth::ActionReply NetstatHelper::query(const QVariantMap)
 
     if(0 != exitCode)
     {
-        qWarning() << "netstat command exit with code: " << exitCode;
-
         reply=KAuth::ActionReply::HelperErrorReply(exitCode);
         reply.addData("response", netstat.readAllStandardError());
     } else {
