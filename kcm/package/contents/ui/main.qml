@@ -21,7 +21,7 @@
 
 import QtQuick 2.6
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 2.12 as QQC2
+import QtQuick.Controls 2.9 as QQC2
 
 import org.kde.kcm 1.0
 import org.nomad.ufw 1.0
