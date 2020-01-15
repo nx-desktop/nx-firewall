@@ -1,22 +1,20 @@
 import QtQuick 2.6
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
-
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
-import org.kde.plasma.extras 2.0 as PlasmaExtras
+import QtQuick.Controls 2.12 as QQC2
 
 import org.kde.kcm 1.0
 import org.nomad.ufw 1.0
 import org.nomad.netstat 1.0
 
-Item {
-    id: mainWindow
+import org.kde.kirigami 2.4 as Kirigami
+import org.kde.kcm 1.1 as KCM
 
-    implicitWidth: units.gridUnit * 44
-    implicitHeight: units.gridUnit * 50
-    clip: true
+KCM.SimpleKCM {
+    id: root
+
+    implicitHeight: Kirigami.Units.gridUnit * 22
+
+    KCM.ConfigModule.quickHelp: i18n("This module lets you configure firewall.")
 
     UfwClient {
         id: ufwClient
@@ -32,63 +30,47 @@ Item {
         anchors.fill: parent
     }
 
-    PlasmaCore.FrameSvgItem {
-       anchors.fill: parent
-       imagePath: "dialogs/background"
-       enabledBorders: PlasmaCore.FrameSvg.NoBorder
-    }
+    ColumnLayout {
+        QQC2.TabBar {
+            id: tabButtons
 
-    PlasmaComponents.TabBar {
-        id: tabButtons
-        anchors.top: parent.top
-        anchors.left: parent.left
+            QQC2.TabButton {
+                text: i18n("Rules")
+            }
+            QQC2.TabButton {
+                text: i18n("Connections")
+            }
+            QQC2.TabButton {
+                text: i18n("Logs")
+            }
+        }
 
-        PlasmaComponents.TabButton {
-            text: i18n("Rules")
-            tab: rulesTab
-        }
-        PlasmaComponents.TabButton {
-            text: i18n("Connections")
-            tab: connectionsTab
-        }
-        PlasmaComponents.TabButton {
-            id: logsTabButton
-            text: i18n("Logs")
-            tab: logsTab
-        }
-    }
+        StackLayout {
+            id: tabGroup
+            currentIndex: tabButtons.currentIndex
 
-    PlasmaComponents.TabGroup {
-        id: tabGroup
-        anchors.top: tabButtons.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.margins: 12
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
-        PlasmaExtras.ConditionalLoader {
-            id: rulesTab
-            when: tabGroup.currentTab == rulesTab
-            source: Qt.createComponent("RulesView.qml")
-        }
-        PlasmaExtras.ConditionalLoader {
-            id: connectionsTab
-            when: tabGroup.currentTab == connectionsTab
-            source: Qt.createComponent("ConnectionsView.qml")
-        }
-        PlasmaExtras.ConditionalLoader {
-            id: logsTab
-            when: tabGroup.currentTab == logsTab
-            source: Qt.createComponent("LogsView.qml")
-        }
-    }
+            RulesView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
 
-    PlasmaComponents.Label {
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
+            ConnectionsView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
 
-        text: ufwClient.status
+            LogsView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+        }
+
+        QQC2.Label {
+            text: ufwClient.status
+        }
     }
 
     function createRuleFromConnection(protocol, localAddress, foreignAddres, status) {
