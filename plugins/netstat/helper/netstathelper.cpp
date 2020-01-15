@@ -87,13 +87,13 @@ QVariantList NetstatHelper::parseSSOutput(const QByteArray &netstatOutput)
 
     // can't easily parse because of the spaces in Local and Peer AddressPort.
     QStringList headerLines = {
-        i18n("Netid"),
-        i18n("State"),
-        i18n("Recv-Q"),
-        i18n("Send-Q"),
-        i18n("Local Address:Port"),
-        i18n("Peer Address:Port"),
-        i18n("Process"),
+        QStringLiteral("Netid"),
+        QStringLiteral("State"),
+        QStringLiteral("Recv-Q"),
+        QStringLiteral("Send-Q"),
+        QStringLiteral("Local Address:Port"),
+        QStringLiteral("Peer Address:Port"),
+        QStringLiteral("Process"),
     };
 
     /* Insertion order:
