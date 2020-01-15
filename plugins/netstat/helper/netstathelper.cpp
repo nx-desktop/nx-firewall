@@ -130,7 +130,7 @@ QVariantList NetstatHelper::parseSSOutput(const QByteArray &netstatOutput)
             values[4], // Local Address
             values[5], // Peer Address,
             values[1], // State
-            pid, // Pid + Program. //TODO: Extract program name.
+            pid,
             appName,
         };
 
