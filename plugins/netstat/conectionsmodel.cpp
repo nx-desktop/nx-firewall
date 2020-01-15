@@ -3,6 +3,7 @@
 #include <QDebug>
 
 #include <KAuth>
+#include "netstatclient.h"
 
 ConnectionsModel::ConnectionsModel(QObject *parent)
     : QAbstractListModel(parent), m_queryRunning(false)
@@ -57,7 +58,7 @@ void ConnectionsModel::refreshConnections()
 {
     if (m_queryRunning)
     {
-        qWarning() << "Netstat client is bussy";
+        NetstatClient::self()->setStatus("Netstat client is bussy");
         return;
     }
 
@@ -75,9 +76,10 @@ void ConnectionsModel::refreshConnections()
             beginResetModel();
             m_connectionsData = job->data().value("connections", QVariantList()).toList();
             endResetModel();
-        } else
-            qWarning() << "BACKEND ERROR: " << job->error() << job->errorText();
-
+            NetstatClient::self()->setStatus({});
+        } else {
+            NetstatClient::self()->setStatus(QStringLiteral("BACKEND ERROR: ") + job->error() + QStringLiteral(" ") + job->errorText());
+        }
         m_queryRunning = false;
     });
 
