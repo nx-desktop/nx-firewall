@@ -3,23 +3,15 @@
 #include <QDebug>
 #include <QProcess>
 #include <QStringList>
+#include <QStandardPaths>
 
 NetstatHelper::NetstatHelper()
 {
-    int exitCode = QProcess::execute("netstat", {"--version"});
-    if (exitCode == -2) { // could not execute file
-        qWarning() << "netstat is not installed or not in the PATH, please configure system.";
-        mHasNetstat = false;
-    } else {
-        mHasNetstat = true;
-    }
+    mHasNetstat = !QStandardPaths::findExecutable("netstat").isEmpty();
+    mHasSS = !QStandardPaths::findExecutable("ss").isEmpty();
 
-    exitCode = QProcess::execute("ss", {"--version"});
-    if (exitCode == -2) { // could not execute file
-        qWarning() << "ss is not installed or not in the PATH, install iptroute-2.";
-        mHasSS = false;
-    } else {
-        mHasSS = true;
+    if (!mHasNetstat && !mHasSS) { // could not execute file
+        qWarning() << "could not find iproute2 or net-tools packages installed.";
     }
 }
 
