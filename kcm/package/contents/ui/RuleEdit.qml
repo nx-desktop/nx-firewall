@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.12
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.1
 
@@ -103,17 +103,16 @@ Popup {
                 PlasmaComponents.Label {
                     text: i18n("Address:")
                 }
-                PlasmaComponents.TextField {
+                IpV4TextField {
                     id: sourceAddress
-                    Layout.fillWidth: true
-
-                    placeholderText: "0.0.0.0/0"
                     text: rule.sourceAddress
                     onTextChanged: rule.sourceAddress = text
-                    property var originalValue
 
+                    //TODO: Move this to KConfigXT
+                    property var originalValue
                     Component.onCompleted: originalValue = rule.sourceAddress
                 }
+
                 PlasmaComponents.CheckBox {
                     text: i18n("Any")
                     checked: sourceAddress.text == ""
@@ -123,13 +122,13 @@ Popup {
                 PlasmaComponents.Label {
                     text: i18n("Port:")
                 }
-                PlasmaComponents.TextField {
+                PortTextField{
                     id: sourcePort
                     text: rule.sourcePort
                     onTextChanged: rule.sourcePort = text
-                    placeholderText: "0/0"
-                    property var originalValue
 
+                    //TODO: Move this to KConfigXT
+                    property var originalValue
                     Component.onCompleted: originalValue = rule.sourcePort
                 }
                 PlasmaComponents.CheckBox {
@@ -154,11 +153,8 @@ Popup {
                 PlasmaComponents.Label {
                     text: i18n("Address:")
                 }
-                PlasmaComponents.TextField {
+                IpV4TextField {
                     id: destinationAddress
-                    Layout.fillWidth: true
-
-                    placeholderText: "0.0.0.0/0"
                     text: rule.destinationAddress
                     onTextChanged: rule.destinationAddress = text
                 }
@@ -170,9 +166,8 @@ Popup {
                 PlasmaComponents.Label {
                     text: i18n("Port:")
                 }
-                PlasmaComponents.TextField {
+                PortTextField {
                     id: destinationPort
-
                     placeholderText: "0/0"
                     text: rule.destinationPort
                     onTextChanged: rule.destinationPort = text
