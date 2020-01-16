@@ -21,9 +21,9 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.9 as QQC2
 
-TextInput {
+QQC2.TextField {
     id: root
-
+    placeholderText: "0"
     validator: RegExpValidator {
         regExp: /^((?:[0-9A-Fa-f]{1,4}))((?::[0-9A-Fa-f]{1,4}))*::((?:[0-9A-Fa-f]{1,4}))((?::[0-9A-Fa-f]{1,4}))*|((?:[0-9A-Fa-f]{1,4}))((?::[0-9A-Fa-f]{1,4})){7}$/
     }
