@@ -38,7 +38,7 @@ KCM.SimpleKCM {
 
     UfwClient {
         id: ufwClient
-        logsAutoRefresh: tabButtons.currentTab == logsTabButton
+        logsAutoRefresh: true
     }
 
     NetstatClient {
