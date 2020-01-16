@@ -18,72 +18,57 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.12
 import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.12 as QQC2
 
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.kirigami 2.4 as Kirigami
 
-MouseArea {
-    id: itemRoot
-    height: 48
-    anchors.left: parent.left
-    anchors.right: parent.right
-
-    hoverEnabled: true
+Kirigami.BasicListItem {
+    id: root
 
     signal filterConnection(var protocol, var localAddress, var foreignAddres, var status)
 
-    Rectangle {
-        id: background
-        anchors.fill: parent
-        color: theme.highlightColor
-
-        visible: itemRoot.containsMouse
-    }
-
     RowLayout {
         id: layout
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
+        height: iconButton.height
 
-        PlasmaComponents.Label {
+        QQC2.Label {
             Layout.leftMargin: 12
             Layout.preferredWidth: 60
             text: model.protocol
         }
-        PlasmaComponents.Label {
+        QQC2.Label {
             Layout.preferredWidth: 160
             text: model.localAddress
         }
-        PlasmaComponents.Label {
+        QQC2.Label {
             Layout.preferredWidth: 160
             text: model.foreignAddress
         }
-        PlasmaComponents.Label {
+        QQC2.Label {
             Layout.preferredWidth: 100
             text: model.status
         }
-//        PlasmaComponents.Label {
-//            Layout.preferredWidth: 40
-//            text: model.pid
-//        }
-        PlasmaComponents.Label {
+        QQC2.Label {
+            Layout.preferredWidth: 40
+            text: model.pid
+        }
+        QQC2.Label {
             Layout.preferredWidth: 120
             text: model.program !== "" ? model.program : ""
         }
-    }
-
-    PlasmaComponents.ToolButton {
-        anchors.right: parent.right
-        anchors.rightMargin: 24
-        anchors.verticalCenter: parent.verticalCenter
-        visible: itemRoot.containsMouse
-
-        height: 48
-        iconSource: "view-filter"
-        onClicked: itemRoot.filterConnection(model.protocol, model.localAddress,
-                                             model.foreignAddress, model.status)
+        Item {
+            visible: !root.containsMouse
+            height: iconButton.height
+            width: iconButton.width
+        }
+        QQC2.ToolButton {
+            id: iconButton
+            visible: root.containsMouse
+            icon.name: "view-filter"
+            onClicked: root.filterConnection(model.protocol, model.localAddress,
+                                                model.foreignAddress, model.status)
+        }
     }
 }
