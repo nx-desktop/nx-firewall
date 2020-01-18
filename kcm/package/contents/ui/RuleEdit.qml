@@ -8,32 +8,23 @@ import org.kde.plasma.extras 2.0 as PlasmaExtras
 
 import org.nomad.ufw 1.0 as UFW
 
-Popup {
-    focus: true
-    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
-
+Item {
     signal accept(var rule)
+
     property var rule: UFW.Rule {
         policy: "deny"
         incoming: true
         logging: "none"
     }
-    property bool newRule: false
 
-    background: PlasmaCore.FrameSvgItem {
-        anchors.fill: parent
-        imagePath: "opaque/dialogs/background"
-    }
+    property bool newRule: false
 
     onAccept: {
         if (newRule)
             ufwClient.addRule(rule)
         else
             ufwClient.updateRule(rule)
-
-        close()
     }
-    Component.onCompleted: open()
 
     GridLayout {
         anchors.fill: parent

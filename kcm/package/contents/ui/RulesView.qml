@@ -20,7 +20,7 @@
  */
 
 import QtQuick 2.0
-import QtQuick.Layouts 1.3
+import QtQuick.Layouts 1.12
 import QtQuick.Controls 1.4
 
 
@@ -34,73 +34,30 @@ import org.nomad.ufw 1.0 as UFW
 ColumnLayout {
     spacing: 12
 
-    // First two buttons.
-    GlobalRules {
-    }
+    StackLayout {
+        id: mainLayout
 
-    // Dynamic Rules
-    QQC2.ScrollView {
-        id: listScrollArea
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-
-        ListView {
-            id: listView
-            model: ufwClient.rules()
-            bottomMargin: 48 * 2
-            delegate: RuleListItem {
-                dropAreasVisible: true
-                width: listView.width
-                onMove: function (from, to) {
-                    //                    print("moving ", from, " to ", to)
-                    if (from < to)
-                        to = to - 1
-
-                    // Force valid positions
-                    to = Math.max(0, to)
-                    to = Math.min(listView.model.rowCount(), to)
-
-                    if (from !== to) {
-                        //                        listView.model.move(from, to)
-                        ufwClient.moveRule(from, to)
-                    }
-                }
-
-                onEdit: function (index) {
-                    var rule = ufwClient.getRule(index)
-                    ruleDetailsLoader.setSource("RuleEdit.qml", {
-                                                    rule: rule,
-                                                    newRule: false,
-                                                    x: 0,
-                                                    y: 0,
-                                                    height: mainWindow.height,
-                                                    width: mainWindow.width
-                                                })
-                }
-
-                onRemove: function (index) {
-                    ufwClient.removeRule(index)
-                }
+        ColumnLayout {
+            GlobalRules {
             }
 
-            section.property: "ipv6"
-            section.criteria: ViewSection.FullString
+            DynamicFirewallRules {
+
+            }
+            QQC2.ToolButton {
+                height: 48
+                icon.name: "list-add"
+                text: i18n("New Rule")
+                onClicked: {
+                   // ruleEdit.newRule()
+                    mainLayout.currentIndex = 1
+                }
+            }
+        }
+
+        RuleEdit {
+            id: ruleEdit
         }
     }
 
-    QQC2.ToolButton {
-        height: 48
-        icon.name: "list-add"
-        text: i18n("New Rule")
-
-        onClicked: {
-            ruleDetailsLoader.setSource("RuleEdit.qml", {
-                                            newRule: true,
-                                            x: 0,
-                                            y: 0,
-                                            height: mainWindow.height,
-                                            width: mainWindow.width
-                                        })
-        }
-    }
 }
