@@ -84,15 +84,6 @@ void LogListModel::addRawLogs(QStringList rawLogsList)
             QString sourcePort = match.captured(11);
             QString destinationPort = match.captured(12);
 
-//            qDebug() << "host" << host;
-//            qDebug() << "id" << id;
-//            qDebug() << "action" << action;
-//            qDebug() << "interface" << interface;
-//            qDebug() << "sourceAddress" << sourceAddress;
-//            qDebug() << "destinationAddress" << destinationAddress;
-//            qDebug() << "protocol" << protocol;
-//            qDebug() << "sourcePort" << sourcePort;
-//            qDebug() << "destinationPort" << destinationPort;
             QVariantList logDetails;
 
             logDetails << sourceAddress << sourcePort;
