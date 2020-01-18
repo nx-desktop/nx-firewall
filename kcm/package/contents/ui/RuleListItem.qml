@@ -150,14 +150,22 @@ Item {
             QQC2.Label {
                 text: model.logging
             }
+            Item {
+                visible: !eraseButton.visible
+                width: eraseButton.width
+                height: eraseButton.height
+            }
             QQC2.ToolButton {
                 id: eraseButton
 
-                visible: false
+                visible: itemRoot.containsMouse
                 onHoveredChanged: visible = hovered
 
                 icon.name: "user-trash"
                 onClicked: itemRoot.remove(index)
+            }
+            Item {
+                Layout.fillWidth: true
             }
         }
     }
