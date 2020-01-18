@@ -26,12 +26,15 @@ import org.kde.kirigami 2.4 as Kirigami
 
 /* TODO: Move this to a Table View */
 QQC2.ScrollView {
+    id: root
+    signal filterConnection(var protocol, var localAddress, var foreignAddres, var status)
+
     ListView {
         clip: true
         anchors.fill: parent
         model: netStatClient.connections()
         delegate: ConnectionItemDelegate {
-            onFilterConnection: mainWindow.createRuleFromConnection(protocol, localAddress, foreignAddres, status)
+            onFilterConnection: root.filterConnection(protocol, localAddress, foreignAddres, status)
         }
 
         headerPositioning: ListView.OverlayHeader

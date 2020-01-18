@@ -24,11 +24,15 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.12 as QQC2
 
 QQC2.ScrollView {
+    id: root
+    signal filterLog(var protocol, var sourceAddress, var sourcePort, var destinationAddress, var destinationPort, var iface)
+
     ListView {
         model: ufwClient.logs()
         delegate: LogItemDelegate {
             id: itemRoot
             width: root.width - 10
+            onFilterLog: root.filterLog(protocol, sourceAddress, sourcePort, destinationAddress, destinationPort, iface);
         }
 
         add: Transition {
