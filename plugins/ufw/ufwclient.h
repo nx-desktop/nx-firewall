@@ -61,6 +61,15 @@ public:
         const QString &foreignAddres,
         const QString &status);
 
+    Q_INVOKABLE RuleWrapper* createRuleFromLog(
+        const QString &protocol,
+        const QString &sourceAddress,
+        const QString &sourcePort,
+        const QString &destinationAddress,
+        const QString &destinationPort,
+        const QString &inn,
+        const QString &out);
+
     bool enabled() const;
     bool isBusy() const;
     QString status() const;

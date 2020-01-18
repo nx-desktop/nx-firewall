@@ -29,6 +29,9 @@ Kirigami.BasicListItem {
     id: itemRoot
     height: 42
 
+    /* request a new rule based on this log model model id. */
+    signal filterLog(var protocol, var sourceAddress, var sourcePort, var destinationAddress, var destinationPort, var iface)
+
     RowLayout {
         id: itemLayout
         spacing: 0
@@ -112,12 +115,13 @@ Kirigami.BasicListItem {
 
 
             icon.name: "view-filter"
-            onClicked: mainWindow.createRuleFromLog(model.protocol,
-                                                    model.sourceAddress,
-                                                    model.sourcePort,
-                                                    model.destinationAddress,
-                                                    model.destinationPort,
-                                                    model.interface)
+            onClicked: itemRoot.filterLog(
+                model.protocol,
+                model.sourceAddress,
+                model.sourcePort,
+                model.destinationAddress,
+                model.destinationPort,
+                model.interface)
         }
 
         Item {

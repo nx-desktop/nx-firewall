@@ -541,3 +541,36 @@ RuleWrapper* UfwClient::createRuleFromConnection(const QString &protocol, const 
     rule->setProtocol(getKnownProtocols().indexOf(protocol.toUpper()));
     return rule;
 }
+
+RuleWrapper *UfwClient::createRuleFromLog(
+    const QString &protocol,
+    const QString &sourceAddress,
+    const QString &sourcePort,
+    const QString &destinationAddress,
+    const QString &destinationPort,
+    const QString &inn,
+    const QString &out)
+{
+        // Transform to the ufw notation
+        auto rule = new RuleWrapper({});
+
+        auto _sourceAddress = sourceAddress;
+        _sourceAddress.replace("*", "");
+        _sourceAddress.replace("0.0.0.0", "");
+
+        auto _destinationAddress = destinationAddress;
+        _destinationAddress.replace("*", "");
+        _destinationAddress.replace("0.0.0.0", "");
+
+        // Prepare rule draft
+        rule->setIncoming(inn.size());
+        rule->setPolicy("allow");
+        rule->setSourceAddress(_sourceAddress);
+        rule->setSourcePort(sourcePort);
+
+        rule->setDestinationAddress(_destinationAddress);
+        rule->setDestinationPort(destinationPort);
+
+        rule->setProtocol(getKnownProtocols().indexOf(protocol.toUpper()));
+        return rule;
+}
