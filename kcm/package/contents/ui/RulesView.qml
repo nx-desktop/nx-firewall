@@ -55,6 +55,7 @@ ColumnLayout {
             }
         }
 
+        // Remove this from stack layout in the future.
         RuleEdit {
             id: ruleEdit
         }
