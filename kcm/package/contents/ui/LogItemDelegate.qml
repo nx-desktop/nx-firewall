@@ -21,32 +21,24 @@
 
 import QtQuick 2.0
 import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.12 as QQC2
 
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
-import org.kde.plasma.extras 2.0 as PlasmaExtras
+import org.kde.kirigami 2.4 as Kirigami
 
-PlasmaComponents.ListItem {
+Kirigami.BasicListItem {
     id: itemRoot
     height: 42
 
-    MouseArea {
-        anchors.fill: parent
-        onEntered: filterButton.visible = true
-        onExited: filterButton.visible = false
-        hoverEnabled: true
-    }
     RowLayout {
         id: itemLayout
         spacing: 0
-        anchors.fill: parent
 
-        PlasmaComponents.Label {
+        QQC2.Label {
             Layout.leftMargin: 14
             text: "<i>" + model.time + "</i>"
         }
 
-        PlasmaComponents.Label {
+        QQC2.Label {
             Layout.leftMargin: 12
             text: i18n("from") + "<b> %1</b>".arg(sourceAddress)
 
@@ -58,13 +50,13 @@ PlasmaComponents.ListItem {
                 cursorShape: Qt.PointingHandCursor
             }
         }
-        PlasmaComponents.Label {
+        QQC2.Label {
             Layout.leftMargin: 0
-            text: ":" + sourcePort
+            text: ":" + model.sourcePort
             visible: sourcePort
         }
 
-        PlasmaComponents.Label {
+        QQC2.Label {
             Layout.leftMargin: 6
             text: i18n("to <b>") + destinationAddress + "</b>"
 
@@ -76,29 +68,26 @@ PlasmaComponents.ListItem {
                 cursorShape: Qt.PointingHandCursor
             }
         }
-        PlasmaComponents.Label {
+        QQC2.Label {
             Layout.leftMargin: 0
             text: ":" + destinationPort
             visible: destinationPort
         }
-        PlasmaComponents.Label {
+        QQC2.Label {
             visible: false
             Layout.leftMargin: 4
             text: i18n(" at <b>%1</b>", model.interface)
         }
-        PlasmaComponents.Label {
-            Layout.fillWidth: true
+
+        Image {
+            source: action == "UFW BLOCK" ? "tab-close" : ""
         }
 
-        //                    PlasmaCore.IconItem {
-        //                        source: action == "UFW BLOCK" ? "tab-close" : ""
-        //                    }
-        PlasmaComponents.Label {
+        QQC2.Label {
             text: model.action
         }
 
         Text {
-            Layout.preferredWidth: 40
             Layout.leftMargin: 6
             horizontalAlignment: Text.AlignHCenter
             text: protocol.toLowerCase()
@@ -112,22 +101,27 @@ PlasmaComponents.ListItem {
         }
 
         Item {
-            height: 32
-            width: 32
-            PlasmaComponents.ToolButton {
-                id: filterButton
-                anchors.fill: parent
-                visible: false
-                onHoveredChanged: visible = hovered
+            visible: !filterButton.visible
+            height: filterButton.height
+            width: filterButton.width
+        }
 
-                iconSource: "view-filter"
-                onClicked: mainWindow.createRuleFromLog(model.protocol,
-                                                        model.sourceAddress,
-                                                        model.sourcePort,
-                                                        model.destinationAddress,
-                                                        model.destinationPort,
-                                                        model.interface)
-            }
+        QQC2.ToolButton {
+            id: filterButton
+            visible: itemRoot.containsMouse
+
+
+            icon.name: "view-filter"
+            onClicked: mainWindow.createRuleFromLog(model.protocol,
+                                                    model.sourceAddress,
+                                                    model.sourcePort,
+                                                    model.destinationAddress,
+                                                    model.destinationPort,
+                                                    model.interface)
+        }
+
+        Item {
+            Layout.fillWidth: true
         }
     }
 }
