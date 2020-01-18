@@ -89,14 +89,13 @@ KCM.SimpleKCM {
 
             ConnectionsView {
                 onFilterConnection: {
-                    var rule = kcm.createRuleFromConnection(protocol, localAddress, foreignAddres, status)
-                    //TODO: Load from the RuleEdit.
+                    var rule = ufwClient.createRuleFromConnection(protocol, localAddress, foreignAddres, status)
                 }
             }
 
             LogsView {
                 onFilterLog: {
-                    var rule = kcm.createRuleFromLog(protocol, sourceAddress, sourcePort, destinationAddress, destinationPort, iface)
+                    var rule = ufwClient.createRuleFromLog(protocol, sourceAddress, sourcePort, destinationAddress, destinationPort, iface)
                 }
             }
         }
