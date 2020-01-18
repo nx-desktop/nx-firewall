@@ -82,20 +82,6 @@ Item {
         }
     }
 
-    MouseArea {
-        id: itemRootMouseArea
-        anchors.fill: dragableItem
-        hoverEnabled: true
-
-        acceptedButtons: Qt.LeftButton
-        onClicked: edit(index)
-
-        onEntered: eraseButton.visible = true
-        onExited: eraseButton.visible = false
-        propagateComposedEvents: true
-        z: dragableItem.z + 1
-    }
-
     Kirigami.BasicListItem {
         id: dragableItem
         y: upperSpacer.height
@@ -120,6 +106,7 @@ Item {
         Drag.hotSpot.y: dragArea.height / 2
 
         z: Drag.active ? 100 : 0
+        onClicked: edit(index)
 
         RowLayout {
             Item {
