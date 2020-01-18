@@ -32,8 +32,6 @@ import org.kde.kirigami 2.4 as Kirigami
 import org.nomad.ufw 1.0 as UFW
 
 ColumnLayout {
-    spacing: 12
-
     StackLayout {
         id: mainLayout
 
