@@ -45,10 +45,6 @@ KCM.SimpleKCM {
         id: netStatClient
     }
 
-    Loader {
-        id: ruleDetailsLoader
-    }
-
     ColumnLayout {
         Kirigami.InlineMessage {
             id: netstatError
