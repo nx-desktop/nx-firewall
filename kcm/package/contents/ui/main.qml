@@ -84,22 +84,13 @@ KCM.SimpleKCM {
             id: tabGroup
             currentIndex: tabButtons.currentIndex
 
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
             RulesView {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
             }
 
             ConnectionsView {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
             }
 
             LogsView {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
             }
         }
     }
