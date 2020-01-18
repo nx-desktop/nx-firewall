@@ -114,11 +114,11 @@ Item {
                 height: 32
                 width: 32
 
-                Image {
+                QQC2.ToolButton {
                     anchors.centerIn: parent
                     height: 18
                     width: height
-                    // icon.name: "application-menu"
+                    icon.name: "application-menu"
                     visible: itemRootMouseArea.containsMouse
                 }
 
