@@ -23,8 +23,9 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
 
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import QtQuick.Controls 2.12 as QQC2
+
+import org.kde.kirigami 2.4 as Kirigami
 
 Item {
     id: itemRoot
@@ -53,19 +54,13 @@ Item {
         onExited: drag.source.dropIndex = 0
     }
 
-    PlasmaCore.FrameSvgItem {
+    Item {
         id: upperSpacer
         anchors.left: parent.left
         anchors.right: parent.right
-        imagePath: "translucent/widgets/panel-background"
 
         height: 0
         visible: false
-
-        PlasmaComponents.Label {
-            text: i18n("Drop rule")
-            anchors.centerIn: parent
-        }
 
         states: [
             State {
@@ -74,7 +69,6 @@ Item {
                 PropertyChanges {
                     target: upperSpacer
                     height: dragableItem.height
-                    visible: true
                 }
             }
         ]
@@ -88,7 +82,21 @@ Item {
         }
     }
 
-    PlasmaComponents.ListItem {
+    MouseArea {
+        id: itemRootMouseArea
+        anchors.fill: dragableItem
+        hoverEnabled: true
+
+        acceptedButtons: Qt.LeftButton
+        onClicked: edit(index)
+
+        onEntered: eraseButton.visible = true
+        onExited: eraseButton.visible = false
+        propagateComposedEvents: true
+        z: dragableItem.z + 1
+    }
+
+    Kirigami.BasicListItem {
         id: dragableItem
         y: upperSpacer.height
 
@@ -105,19 +113,6 @@ Item {
             dragableItem.base_y = dragableItem.y
         }
 
-        MouseArea {
-            id: itemRootMouseArea
-            anchors.fill: parent
-            hoverEnabled: true
-
-            acceptedButtons: Qt.LeftButton
-            onClicked: edit(index)
-
-            onEntered: eraseButton.visible = true
-            onExited: eraseButton.visible = false
-            propagateComposedEvents: true
-        }
-
         checked: dragArea.drag.active
 
         Drag.active: dragArea.drag.active
@@ -127,18 +122,16 @@ Item {
         z: Drag.active ? 100 : 0
 
         RowLayout {
-            anchors.fill: parent
-
             Item {
                 Layout.leftMargin: 4
                 height: 32
                 width: 32
 
-                PlasmaCore.IconItem {
+                Image {
                     anchors.centerIn: parent
                     height: 18
                     width: height
-                    source: "application-menu"
+                    // icon.name: "application-menu"
                     visible: itemRootMouseArea.containsMouse
                 }
 
@@ -151,58 +144,36 @@ Item {
                         // allways return the item to it's original position
                         dragableItem.x = dragableItem.base_x
                         dragableItem.y = Qt.binding(function () {return upperSpacer.height})
-
-//                        if (dragableItem.dropIndex != index
-//                                && dragableItem.dropIndex - 1 != index)
-                            move(index, dragableItem.dropIndex)
+                        move(index, dragableItem.dropIndex)
                     }
                 }
             }
 
-            PlasmaComponents.Label {
-                Layout.minimumWidth: 120
+            QQC2.Label {
                 Layout.fillHeight: true
                 Layout.leftMargin: 4
                 text: model.action
             }
-            PlasmaComponents.Label {
-                Layout.minimumWidth: 160
+            QQC2.Label {
                 text: model.from
             }
-            PlasmaComponents.Label {
-                Layout.minimumWidth: 160
+            QQC2.Label {
                 text: model.to
             }
-            //        PlasmaComponents.Label {
-            //            Layout.minimumWidth: 60
-            //            text: model.ipv6 ? "IPv6" : ""
-            //        }
-            PlasmaComponents.Label {
-                Layout.leftMargin: 12
+            QQC2.Label {
                 text: model.logging
             }
+            QQC2.ToolButton {
+                id: eraseButton
 
-            Item {
-                //                Layout.fillWidth: true
-                height: 32
-                width: 32
+                visible: false
+                onHoveredChanged: visible = hovered
 
-                PlasmaComponents.ToolButton {
-                    id: eraseButton
-                    minimumHeight: 32
-                    minimumWidth: 32
-
-                    visible: false
-                    onHoveredChanged: visible = hovered
-
-                    iconSource: "user-trash"
-                    onClicked: itemRoot.remove(index)
-                }
+                icon.name: "user-trash"
+                onClicked: itemRoot.remove(index)
             }
         }
     }
-
-
 
     DropArea {
         id: lowerDropArea
@@ -220,20 +191,14 @@ Item {
         onExited: drag.source.dropIndex = -1
     }
 
-    PlasmaCore.FrameSvgItem {
+    Item {
         id: lowerSpacer
         anchors.left: parent.left
         anchors.right: parent.right
-        imagePath: "translucent/widgets/panel-background"
 
         y: dragableItem.height
         height: 0
         visible: false
-
-        PlasmaComponents.Label {
-            text: i18n("Drop rule ")
-            anchors.centerIn: parent
-        }
 
         states: [
             State {
