@@ -54,6 +54,13 @@ public:
     Q_INVOKABLE static QStringList getKnownProtocols();
     Q_INVOKABLE static QStringList getKnownInterfaces();
 
+    /* Creates a new Rule and returns it to the Qml side, passing arguments based on the Connecion Table. */
+    Q_INVOKABLE RuleWrapper* createRuleFromConnection(
+        const QString &protocol,
+        const QString &localAddress,
+        const QString &foreignAddres,
+        const QString &status);
+
     bool enabled() const;
     bool isBusy() const;
     QString status() const;

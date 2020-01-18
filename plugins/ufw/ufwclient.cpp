@@ -507,3 +507,37 @@ bool UfwClient::logsAutoRefresh() const
 {
     return m_logsAutoRefresh;
 }
+
+RuleWrapper* UfwClient::createRuleFromConnection(const QString &protocol, const QString &localAddress, const QString &foreignAddres, const QString &status)
+{
+    auto _localAddress = localAddress;
+    _localAddress.replace("*", "");
+    _localAddress.replace("0.0.0.0", "");
+
+    auto _foreignAddres = foreignAddres;
+    _foreignAddres.replace("*", "");
+    _foreignAddres.replace("0.0.0.0", "");
+
+    auto localAddressData = _localAddress.split(":");
+    auto foreignAddresData = _foreignAddres.split(":");
+
+    auto rule = new RuleWrapper({});
+    rule->setIncoming(status == QStringLiteral("LISTEN"));
+    rule->setPolicy("deny");
+
+    // Prepare rule draft
+    if (status == QStringLiteral("LISTEN")) {
+        rule->setSourceAddress(foreignAddresData[0]);
+        rule->setSourcePort(foreignAddresData[1]);
+        rule->setDestinationAddress(localAddressData[0]);
+        rule->setDestinationPort(localAddressData[1]);
+    } else {
+        rule->setSourceAddress(localAddressData[0]);
+        rule->setSourcePort(localAddressData[1]);
+        rule->setDestinationAddress(foreignAddresData[0]);
+        rule->setDestinationPort(foreignAddresData[1]);
+    }
+
+    rule->setProtocol(getKnownProtocols().indexOf(protocol.toUpper()));
+    return rule;
+}
