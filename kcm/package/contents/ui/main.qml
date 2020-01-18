@@ -45,6 +45,21 @@ KCM.SimpleKCM {
         id: netStatClient
     }
 
+    Kirigami.OverlaySheet {
+        id: drawer
+        parent: root.parent
+        topPadding: 0
+        leftPadding: 0
+        rightPadding: 0
+        bottomPadding: 0
+
+        RuleEdit {
+            id: ruleEdit
+            height: childrenRect.height
+            implicitWidth: 18 * Kirigami.Units.gridUnit
+        }
+    }
+
     ColumnLayout {
         Kirigami.InlineMessage {
             id: netstatError
@@ -81,17 +96,32 @@ KCM.SimpleKCM {
             currentIndex: tabButtons.currentIndex
 
             RulesView {
+                onNewRuleRequest: {
+                    ruleEdit.newRule = true
+                    drawer.open();
+                }
+                onEditRuleRequest: {
+                    ruleEdit.rule = rule
+                    ruleEdit.newRule = false
+                    drawer.open()
+                }
             }
 
             ConnectionsView {
                 onFilterConnection: {
                     var rule = ufwClient.createRuleFromConnection(protocol, localAddress, foreignAddres, status)
+                    ruleEdit.rule
+                    ruleEdit.newRule = true
+                    drawer.open();
                 }
             }
 
             LogsView {
                 onFilterLog: {
                     var rule = ufwClient.createRuleFromLog(protocol, sourceAddress, sourcePort, destinationAddress, destinationPort, iface)
+                    ruleEdit.rule
+                    ruleEdit.newRule = true
+                    drawer.open();
                 }
             }
         }
