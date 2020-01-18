@@ -23,111 +23,84 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
 
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
-import org.kde.plasma.extras 2.0 as PlasmaExtras
+
+import QtQuick.Controls 2.12 as QQC2
+
+import org.kde.kirigami 2.4 as Kirigami
+
 
 import org.nomad.ufw 1.0 as UFW
 
 ColumnLayout {
     spacing: 12
+
+    // First two buttons.
     GlobalRules {
     }
 
-    FocusScope {
-        id: rulesViewRoot
-
-        Layout.topMargin: 6
+    // Dynamic Rules
+    QQC2.ScrollView {
+        id: listScrollArea
         Layout.fillWidth: true
         Layout.fillHeight: true
 
-        clip: true
+        ListView {
+            id: listView
+            model: ufwClient.rules()
+            bottomMargin: 48 * 2
+            delegate: RuleListItem {
+                dropAreasVisible: true
+                width: listView.width
+                onMove: function (from, to) {
+                    //                    print("moving ", from, " to ", to)
+                    if (from < to)
+                        to = to - 1
 
-        Component {
-            id: sectionHeading
-            PlasmaComponents.ListItem {
-                sectionDelegate: true
-                Item {
-                    height: 32
-                    width: 200
-                    PlasmaExtras.Heading {
-                        anchors.fill: parent
-                        anchors.leftMargin: 12
-                        level: 4
-                        text: section == "true" ? "IPv6" : "IPv4"
-                    }
-                }
-            }
-        }
+                    // Force valid positions
+                    to = Math.max(0, to)
+                    to = Math.min(listView.model.rowCount(), to)
 
-        PlasmaExtras.ScrollArea {
-            id: listScrollArea
-            anchors.fill: parent
-
-            ListView {
-                id: listView
-                model: ufwClient.rules()
-                bottomMargin: 48 * 2
-                delegate: RuleListItem {
-                    dropAreasVisible: true
-                    width: listView.width
-                    onMove: function (from, to) {
-                        //                    print("moving ", from, " to ", to)
-                        if (from < to)
-                            to = to - 1
-
-                        // Force valid positions
-                        to = Math.max(0, to)
-                        to = Math.min(listView.model.rowCount(), to)
-
-                        if (from !== to) {
-                            //                        listView.model.move(from, to)
-                            ufwClient.moveRule(from, to)
-                        }
-                    }
-
-                    onEdit: function (index) {
-                        var rule = ufwClient.getRule(index)
-                        ruleDetailsLoader.setSource("RuleEdit.qml", {
-                                                        rule: rule,
-                                                        newRule: false,
-                                                        x: 0,
-                                                        y: 0,
-                                                        height: mainWindow.height,
-                                                        width: mainWindow.width
-                                                    })
-                    }
-
-                    onRemove: function (index) {
-                        ufwClient.removeRule(index)
+                    if (from !== to) {
+                        //                        listView.model.move(from, to)
+                        ufwClient.moveRule(from, to)
                     }
                 }
 
-                section.property: "ipv6"
-                section.criteria: ViewSection.FullString
-                section.delegate: sectionHeading
+                onEdit: function (index) {
+                    var rule = ufwClient.getRule(index)
+                    ruleDetailsLoader.setSource("RuleEdit.qml", {
+                                                    rule: rule,
+                                                    newRule: false,
+                                                    x: 0,
+                                                    y: 0,
+                                                    height: mainWindow.height,
+                                                    width: mainWindow.width
+                                                })
+                }
+
+                onRemove: function (index) {
+                    ufwClient.removeRule(index)
+                }
             }
+
+            section.property: "ipv6"
+            section.criteria: ViewSection.FullString
         }
+    }
 
-        PlasmaComponents.ToolButton {
-            height: 48
-            iconSource: "list-add"
-            text: i18n("New Rule")
+    QQC2.ToolButton {
+        height: 48
+        icon.name: "list-add"
+        text: i18n("New Rule")
 
-            onClicked: {
-                ruleDetailsLoader.setSource("RuleEdit.qml", {
-                                                newRule: true,
-                                                x: 0,
-                                                y: 0,
-                                                height: mainWindow.height,
-                                                width: mainWindow.width
-                                            })
-            }
-
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 12
-            anchors.right: parent.right
-//            anchors.rightMargin: 12
+        onClicked: {
+            ruleDetailsLoader.setSource("RuleEdit.qml", {
+                                            newRule: true,
+                                            x: 0,
+                                            y: 0,
+                                            height: mainWindow.height,
+                                            width: mainWindow.width
+                                        })
         }
     }
 }
