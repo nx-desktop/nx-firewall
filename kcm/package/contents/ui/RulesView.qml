@@ -32,37 +32,25 @@ import org.kde.kirigami 2.4 as Kirigami
 import org.nomad.ufw 1.0 as UFW
 
 ColumnLayout {
-    StackLayout {
-        id: mainLayout
+    id: mainLayout
+    signal editRuleRequest(var rule)
+    signal newRuleRequest()
 
-        ColumnLayout {
-            GlobalRules {
-            }
+    GlobalRules {
+    }
 
-            DynamicFirewallRules {
-                onRequestRuleEdition : {
-                    ruleEdit.rule = rule
-                    ruleEdit.newRule = false
-                    mainLayout.currentIndex = 1
-                }
-            }
-
-            QQC2.ToolButton {
-                height: 48
-                icon.name: "list-add"
-                text: i18n("New Rule")
-                onClicked: {
-                    mainLayout.currentIndex = 1
-                    ruleEdit.newRule = true
-                }
-            }
+    DynamicFirewallRules {
+        onRequestRuleEdition : {
+            mainLayout.editRule(rule)
         }
+    }
 
-        // Remove this from stack layout in the future.
-        RuleEdit {
-            id: ruleEdit
-            onAccept: mainLayout.currentIndex = 0
-            onReject: mainLayout.currentIndex = 0
+    QQC2.ToolButton {
+        height: 48
+        icon.name: "list-add"
+        text: i18n("New Rule")
+        onClicked: {
+            mainLayout.newRuleRequest()
         }
     }
 }
