@@ -70,5 +70,8 @@ Kirigami.BasicListItem {
             onClicked: root.filterConnection(model.protocol, model.localAddress,
                                                 model.foreignAddress, model.status)
         }
+        Item {
+            Layout.fillWidth: true
+        }
     }
 }
