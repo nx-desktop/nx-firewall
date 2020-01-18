@@ -61,7 +61,14 @@ void LogListModel::addRawLogs(QStringList rawLogsList)
 {
     beginInsertRows(QModelIndex(), 0, rawLogsList.size() - 1);
     // UNSCAPED REGEX: (.*)\s(.*)\s(.*):\s\[(.*)\]\s\[(.*)\].*IN=([\w|\d]*).*SRC=([\w|\.|\d]*).*DST=([\w|\.|\d]*).*PROTO=([\w|\.|\d]*)\s(SPT=(\d*)\sDPT=(\d*))?.*
-    static QRegularExpression regex("(.*)\\s(.*)\\s(.*):\\s\\[(.*)\\]\\s\\[(.*)\\].*IN=([\\w|\\d]*).*SRC=([\\w|\\.|\\d]*).*DST=([\\w|\\.|\\d]*).*PROTO=([\\w|\\.|\\d]*)\\s(SPT=(\\d*)\\sDPT=(\\d*))?.*");
+    static QRegularExpression regex(
+        "(.*)\\s(.*)\\s(.*):\\s\\[(.*)\\]\\s\\[(.*)\\]"
+        ".*IN=([\\w|\\d]*)"
+        ".*SRC=([\\w|\\.|\\d]*)"
+        ".*DST=([\\w|\\.|\\d]*)"
+        ".*PROTO=([\\w|\\.|\\d]*)"
+        "\\s(SPT=(\\d*)\\sDPT=(\\d*))?.*");
+
     for (QString log : rawLogsList) {
 
         auto match = regex.match(log);
