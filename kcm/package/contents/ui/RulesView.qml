@@ -42,7 +42,11 @@ ColumnLayout {
             }
 
             DynamicFirewallRules {
-
+                onRequestRuleEdition : {
+                    ruleEdit.rule = rule
+                    ruleEdit.newRule = false
+                    mainLayout.currentIndex = 1
+                }
             }
 
             QQC2.ToolButton {
@@ -50,8 +54,8 @@ ColumnLayout {
                 icon.name: "list-add"
                 text: i18n("New Rule")
                 onClicked: {
-                   // ruleEdit.newRule()
                     mainLayout.currentIndex = 1
+                    ruleEdit.newRule = true
                 }
             }
         }
@@ -63,5 +67,4 @@ ColumnLayout {
             onReject: mainLayout.currentIndex = 0
         }
     }
-
 }
