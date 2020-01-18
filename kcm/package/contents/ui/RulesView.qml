@@ -44,6 +44,7 @@ ColumnLayout {
             DynamicFirewallRules {
 
             }
+
             QQC2.ToolButton {
                 height: 48
                 icon.name: "list-add"
@@ -58,6 +59,8 @@ ColumnLayout {
         // Remove this from stack layout in the future.
         RuleEdit {
             id: ruleEdit
+            onAccept: mainLayout.currentIndex = 0
+            onReject: mainLayout.currentIndex = 0
         }
     }
 

@@ -9,6 +9,7 @@ import org.nomad.ufw 1.0 as UFW
 
 ColumnLayout {
     signal accept(var rule)
+    signal reject()
 
     property var rule: UFW.Rule {
         policy: "deny"
@@ -210,7 +211,7 @@ ColumnLayout {
             text: i18n("Cancel")
             icon.name: "dialog-cancel"
 
-            onClicked: close()
+            onClicked: reject()
         }
 
         QQC2.Button {
