@@ -7,7 +7,7 @@ Standards-Version: 3.9.6
 
 Package: nx-firewall
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python, ufw, netstat-nat
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3:any (>= 3.3.2-2~), ufw, netstat-nat
 Description: NX Firewall - Protect your workstation!
  NX Firewall allows you to protect your workstation from
  network atacks and also to avoid your data to be exposed 

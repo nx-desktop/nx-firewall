@@ -1,3 +1,9 @@
+nx-firewall (0.4.2) nxos; urgency=medium
+
+  * Change Python dependency.
+
+ -- Uri Herrera <uri_herrera@nxos.org>  Fri, 28 Jun 2020 19:23:00 -0500
+
 nx-firewall (0.4.1) nxos; urgency=medium
 
   * Update name.
