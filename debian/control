@@ -1,8 +1,8 @@
 Source: nx-firewall
-Section: KDE
+Section: kde
 Priority: optional
 Maintainer: Uri Herrera <uri_herrera@nxos.org>
-Build-Depends: debhelper (>=9), cmake, extra-cmake-modules, libkf5i18n-dev, plasma-framework-dev, libkf5declarative-dev, qtdeclarative5-dev, qtbase5-dev, kdelibs5-dev, libqt5x11extras5-dev, libkf5archive-dev, libkf5newstuff-dev, libkf5auth-dev, libkf5config-dev, kio-dev, libkf5configwidgets-dev, libkf5kcmutils-dev, libkf5kdelibs4support-dev, netstat-nat
+Build-Depends: debhelper (>=9), cmake, extra-cmake-modules, libkf5i18n-dev, libkf5plasma-dev, libkf5declarative-dev, qtdeclarative5-dev, qtbase5-dev, kdelibs5-dev, libqt5x11extras5-dev, libkf5archive-dev, libkf5newstuff-dev, libkf5auth-dev, libkf5config-dev, libkf5kio-dev, libkf5configwidgets-dev, libkf5kcmutils-dev, libkf5kdelibs4support-dev, netstat-nat
 Standards-Version: 3.9.6
 
 Package: nx-firewall
